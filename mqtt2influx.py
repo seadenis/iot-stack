@@ -190,6 +190,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    logging.basicConfig(level=logging.DEBUG)
+    def on_connect(cl, userdata, flags, rc):
+        print("RESULT CODE:", rc)    
+    
     client = paho.mqtt.client.Client(client_id=None, clean_session=True, protocol=paho.mqtt.client.MQTTv31)
 
     if args.username:
@@ -197,7 +201,15 @@ if __name__ == '__main__':
 
     logging.info (args.host)
     logging.info (args.port)
+    
+    client.on_connect = on_connect
+    
     client.connect(args.host, args.port)
+
+    client.loop_start()
+    time.sleep(5)      
+    client.loop_stop()    
+    
     client.on_message = on_mqtt_message
 
 #    client.subscribe(args.topic)
