@@ -181,7 +181,7 @@ if __name__ == '__main__':
                         help='MQTT password', default='StrongPa55')
 
     parser.add_argument('-p', '--port', dest='port', type=int,
-                        help='MQTT port', default='8883')
+                        help='MQTT port', default='1883')
 
     mqtt_device_id = str(time.time()) + str(random.randint(0, 100000))
 
