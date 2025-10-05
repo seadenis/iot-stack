@@ -181,7 +181,7 @@ if __name__ == '__main__':
                         help='MQTT password', default='StrongPa55')
 
     parser.add_argument('-p', '--port', dest='port', type=int,
-                        help='MQTT port', default='8883')
+                        help='MQTT port', default='1883')
 
     mqtt_device_id = str(time.time()) + str(random.randint(0, 100000))
 
@@ -195,7 +195,7 @@ if __name__ == '__main__':
     if args.username:
         client.username_pw_set(args.username, args.password)
 
-    client.tls_set(ca_certs="/etc/ssl/certs/ISRG_Root_X1.pem")
+#    client.tls_set(ca_certs="/etc/ssl/certs/ISRG_Root_X1.pem")
     client.connect(args.host, args.port)
 
     client.on_message = on_mqtt_message
