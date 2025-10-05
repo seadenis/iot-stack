@@ -172,7 +172,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='MQTT retained message deleter', add_help=False)
 
     parser.add_argument('-h', '--host', dest='host', type=str,
-                        help='MQTT host', default='172.18.0.3')
+                        help='MQTT host', default='mosquitto')
 
     parser.add_argument('-u', '--username', dest='username', type=str,
                         help='MQTT username', default='mosquitto')
