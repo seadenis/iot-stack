@@ -172,16 +172,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='MQTT retained message deleter', add_help=False)
 
     parser.add_argument('-h', '--host', dest='host', type=str,
-                        help='MQTT host', default='192.168.1.105')
+                        help='MQTT host', default='mosquitto')
 
     parser.add_argument('-u', '--username', dest='username', type=str,
                         help='MQTT username', default='mosquitto')
 
     parser.add_argument('-P', '--password', dest='password', type=str,
-                        help='MQTT password', default='password')
+                        help='MQTT password', default='StrongPa55')
 
     parser.add_argument('-p', '--port', dest='port', type=int,
-                        help='MQTT port', default='1883')
+                        help='MQTT port', default='8883')
 
     mqtt_device_id = str(time.time()) + str(random.randint(0, 100000))
 
@@ -203,7 +203,7 @@ if __name__ == '__main__':
 
 #    influx_client = InfluxDBClient('192.168.1.75', 8086, database='mqtt_data')
 #    influx_client_1 = InfluxDBClient('192.168.1.42', 8086, database='mqtt_data')
-    influx_client_94 = InfluxDBClient('192.168.1.94', 8086, database='mqtt_data')
+    influx_client_94 = InfluxDBClient('influxdb', 8086, database='mqtt_data')
 #    db_writer =  DBWriterThread(influx_client, daemon=True)
 #    db_writer_1 =  DBWriterThread(influx_client_1, daemon=True)
     db_writer_94 =  DBWriterThread(influx_client_94, daemon=True)
