@@ -195,6 +195,8 @@ if __name__ == '__main__':
     if args.username:
         client.username_pw_set(args.username, args.password)
 
+    logging.info (args.host)
+    logging.info (args.port)
     client.connect(args.host, args.port)
     client.on_message = on_mqtt_message
 
