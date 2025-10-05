@@ -181,7 +181,7 @@ if __name__ == '__main__':
                         help='MQTT password', default='StrongPa55')
 
     parser.add_argument('-p', '--port', dest='port', type=int,
-                        help='MQTT port', default='1883')
+                        help='MQTT port', default='8883')
 
     mqtt_device_id = str(time.time()) + str(random.randint(0, 100000))
 
@@ -190,26 +190,14 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.DEBUG)
-    def on_connect(cl, userdata, flags, rc):
-        print("RESULT CODE:", rc)    
-    
     client = paho.mqtt.client.Client(client_id=None, clean_session=True, protocol=paho.mqtt.client.MQTTv31)
 
     if args.username:
         client.username_pw_set(args.username, args.password)
 
-    logging.info (args.host)
-    logging.info (args.port)
-    
-    client.on_connect = on_connect
-    
+    client.tls_set(ca_certs="/etc/ssl/certs/ISRG_Root_X1.pem")
     client.connect(args.host, args.port)
 
-    client.loop_start()
-    time.sleep(5)      
-    client.loop_stop()    
-    
     client.on_message = on_mqtt_message
 
 #    client.subscribe(args.topic)
