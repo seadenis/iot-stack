@@ -60,6 +60,7 @@ class DBWriterThread(Thread):
                     self.influx_client.write_points(db_req_body)
                 except:
                     logging.info ("Exception during writing points")
+                    logging.exception("Exception during writing point")
 
 #        time.sleep(0.01)
 
