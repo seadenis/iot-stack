@@ -106,7 +106,7 @@ def on_mqtt_message(arg0, arg1, arg2=None):
 
     if (msg.topic.find('bridge') != -1):
         return
-    if (msg.topic.find('homeassistant_1') != -1):
+    if (msg.topic.find('homeassistant_') != -1):
         logging.info ("Zigbee: topic="+msg.topic+", value="+msg.payload.decode('utf8'))
 #        logging.info (msg.topic[msg.topic.find('/')+1:])
         device1=msg.topic[msg.topic.find('/')+1:]
