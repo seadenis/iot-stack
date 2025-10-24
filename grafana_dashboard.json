@@ -37,6 +37,221 @@
             "mode": "absolute",
             "steps": [
               {
+                "color": "purple",
+                "value": 0
+              },
+              {
+                "color": "blue",
+                "value": 0
+              },
+              {
+                "color": "super-light-blue",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 18
+              },
+              {
+                "color": "yellow",
+                "value": 25
+              },
+              {
+                "color": "orange",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 19,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "alias": "Ощущаемая температура",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "mqtt_data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value_f"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "client::tag",
+              "operator": "=",
+              "value": "wb_AMTXYWW3"
+            },
+            {
+              "condition": "AND",
+              "key": "channel::tag",
+              "operator": "=",
+              "value": "Balcony/Outdoor_feeling_temperature"
+            }
+          ]
+        }
+      ],
+      "title": "Ощущаемая температура",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "uid": "ff0df601o8w00b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 3,
+        "y": 0
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Уличные ощущения$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "alias": "Уличные ощущения",
+          "groupBy": [],
+          "measurement": "mqtt_data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value_s"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "client::tag",
+              "operator": "=",
+              "value": "wb_AMTXYWW3"
+            },
+            {
+              "condition": "AND",
+              "key": "channel::tag",
+              "operator": "=",
+              "value": "Balcony/Outdoor_feeling"
+            }
+          ]
+        }
+      ],
+      "title": "Погода на улице",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ff0df601o8w00b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
                 "color": "dark-purple",
                 "value": 0
               },
@@ -69,7 +284,7 @@
       "gridPos": {
         "h": 8,
         "w": 3,
-        "x": 0,
+        "x": 6,
         "y": 0
       },
       "id": 2,
@@ -179,7 +394,7 @@
       "gridPos": {
         "h": 8,
         "w": 3,
-        "x": 3,
+        "x": 9,
         "y": 0
       },
       "id": 13,
@@ -288,7 +503,7 @@
       "gridPos": {
         "h": 8,
         "w": 3,
-        "x": 6,
+        "x": 12,
         "y": 0
       },
       "id": 14,
@@ -396,7 +611,7 @@
       "gridPos": {
         "h": 8,
         "w": 3,
-        "x": 9,
+        "x": 15,
         "y": 0
       },
       "id": 15,
@@ -520,8 +735,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
+        "w": 6,
+        "x": 18,
         "y": 0
       },
       "id": 16,
@@ -539,6 +754,7 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {},
         "textMode": "value",
         "wideLayout": true
       },
@@ -654,8 +870,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "celsius"
+          }
         },
         "overrides": []
       },
@@ -785,7 +1000,7 @@
           ]
         }
       ],
-      "title": "Теплоноситель",
+      "title": "Теплоноситель, °C",
       "transparent": true,
       "type": "timeseries"
     },
@@ -847,8 +1062,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "celsius"
+          }
         },
         "overrides": []
       },
@@ -1032,7 +1246,7 @@
           ]
         }
       ],
-      "title": "Температура воздуха",
+      "title": "Температура воздуха, °C",
       "transparent": true,
       "type": "timeseries"
     },
@@ -1173,7 +1387,7 @@
           ]
         }
       ],
-      "title": "Радиационный фон, мкР/ч",
+      "title": "Радиационный фон, μR/h",
       "transparent": true,
       "type": "timeseries"
     },
@@ -1237,8 +1451,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "mmHg"
+          }
         },
         "overrides": []
       },
@@ -1315,7 +1528,7 @@
           ]
         }
       ],
-      "title": "Атмосферное давление",
+      "title": "Атмосферное давление, mmHg",
       "transparent": true,
       "type": "timeseries"
     },
@@ -1376,8 +1589,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "lux"
+          }
         },
         "overrides": []
       },
@@ -1452,7 +1664,7 @@
           ]
         }
       ],
-      "title": "Освещенность",
+      "title": "Освещенность, lux",
       "transparent": true,
       "type": "timeseries"
     },
@@ -1516,8 +1728,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "congm3"
+          }
         },
         "overrides": []
       },
@@ -1592,7 +1803,7 @@
           ]
         }
       ],
-      "title": "Абсолютная влажность",
+      "title": "Абсолютная влажность, g/m³",
       "transparent": true,
       "type": "timeseries"
     },
@@ -1655,8 +1866,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "humidity"
+          }
         },
         "overrides": []
       },
@@ -1731,7 +1941,7 @@
           ]
         }
       ],
-      "title": "Относительная влажность",
+      "title": "Относительная влажность, %H",
       "transparent": true,
       "type": "timeseries"
     },
@@ -1795,8 +2005,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "volt"
+          }
         },
         "overrides": []
       },
@@ -1871,7 +2080,7 @@
           ]
         }
       ],
-      "title": "Напряжение сети",
+      "title": "Напряжение сети, V",
       "transparent": true,
       "type": "timeseries"
     },
@@ -1935,8 +2144,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "rothz"
+          }
         },
         "overrides": []
       },
@@ -2011,7 +2219,7 @@
           ]
         }
       ],
-      "title": "Частота сети",
+      "title": "Частота сети, Hz",
       "transparent": true,
       "type": "timeseries"
     },
@@ -2072,8 +2280,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "ms"
+          }
         },
         "overrides": []
       },
@@ -2419,7 +2626,7 @@
           ]
         }
       ],
-      "title": "ICMP RTT",
+      "title": "ICMP RTT, ms",
       "transparent": true,
       "type": "timeseries"
     }
@@ -2432,12 +2639,12 @@
     "list": []
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Муравская",
   "uid": "ad8btw2",
-  "version": 28
+  "version": 35
 }
