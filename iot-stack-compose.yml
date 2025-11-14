@@ -1,7 +1,8 @@
 services:
   mosquitto:
-    image: eclipse-mosquitto:2
+    image: eclipse-mosquitto:2.0.22
     restart: unless-stopped
+    container_name: mosquitto
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - ./mosquitto/config/passwd:/mosquitto/config/passwd
@@ -44,6 +45,7 @@ services:
   mqtt2influx:
     build: ./python-ingest
     restart: unless-stopped
+    container_name: mqtt2influx
     depends_on:
       influxdb: { condition: service_started }
       mosquitto: { condition: service_started }
@@ -52,13 +54,20 @@ services:
       - MQTT_PORT=1883
       - INFLUX_HOST=influxdb
       - INFLUX_PORT=8086
+      - TZ=Europe/Moscow
     volumes:
       - ./secrets:/run/secrets:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
 
   grafana:
-    image: grafana/grafana:latest
-    user: root
+    image: grafana/grafana:12.3.0-19020365962
+#    user: root
     restart: unless-stopped
+    container_name: grafana
     depends_on:
       influxdb: { condition: service_started }
     volumes:
@@ -76,13 +85,15 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
       - GF_USERS_ALLOW_SIGN_UP=false
-    labels:
-      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
+      - GF_LIVE_ENABLED=false
+#    labels:
+#      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
     expose: ["3000"]
 
   nginx:
-    image: nginx:stable
+    image: nginx:1.29-alpine
     restart: unless-stopped
+    container_name: nginx
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
@@ -91,11 +102,11 @@ services:
       - "443:443"
       - "8080:8080"
     depends_on: [grafana]
-    labels:
-      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
+#    labels:
+#      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
 
   telegraf:
-    image: telegraf:1.30
+    image: telegraf:1.36.3-alpine
     restart: unless-stopped
     user: telegraf:991
     depends_on:
