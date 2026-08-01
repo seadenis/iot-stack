@@ -1,38 +1,89 @@
 #!/usr/bin/python3
-import argparse
-import math
-
-import paho.mqtt.client
-
-import time
-import random
-import sys
-
-from influxdb import InfluxDBClient
-from threading import Thread
-from collections import deque
 
 import logging
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
+import math
+import os
+import sys
+import time
+from collections import deque
+from pathlib import Path
+from threading import Thread
+
+import paho.mqtt.client as mqtt
+from influxdb import InfluxDBClient
+
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s: %(message)s",
+    level=logging.INFO,
+)
+
+
+def env_int(name, default):
+    value = os.getenv(name, str(default))
+    try:
+        return int(value)
+    except ValueError as exc:
+        raise RuntimeError(
+            f"Environment variable {name} must be an integer"
+        ) from exc
+
+
+def read_secret(env_name, default_path):
+    path = Path(os.getenv(env_name, default_path))
+
+    try:
+        value = path.read_text(encoding="utf-8").strip()
+    except OSError as exc:
+        raise RuntimeError(
+            f"Unable to read secret file configured by {env_name}: {path}"
+        ) from exc
+
+    if not value:
+        raise RuntimeError(
+            f"Secret file configured by {env_name} is empty: {path}"
+        )
+
+    return value
+
+
+MQTT_HOST = os.getenv("MQTT_HOST", "mosquitto")
+MQTT_PORT = env_int("MQTT_PORT", 1883)
+MQTT_TOPIC = os.getenv("MQTT_TOPIC", "#")
+
+INFLUX_HOST = os.getenv("INFLUX_HOST", "influxdb")
+INFLUX_PORT = env_int("INFLUX_PORT", 8086)
+INFLUX_DATABASE = os.getenv("INFLUX_DATABASE", "mqtt_data")
+
+MQTT_USERNAME = read_secret(
+    "MQTT_USERNAME_FILE",
+    "/run/secrets/mqtt2influx_username",
+)
+
+MQTT_PASSWORD = read_secret(
+    "MQTT_PASSWORD_FILE",
+    "/run/secrets/mqtt2influx_password",
+)
+
 
 class DBWriterThread(Thread):
     def __init__(self, influx_client, *args, **kwargs):
         self.influx_client = influx_client
         self.data_queue = deque()
-
-        super(DBWriterThread, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def schedule_item(self, client, device_id, control_id, value):
         item = (client, device_id, control_id, value)
         self.data_queue.append(item)
 
     def get_items(self, mininterval, maxitems):
-        """ This will collect items from queue until either 'mininterval'
-        is over or 'maxitems' items are collected """
         started = time.time()
         items = []
 
-        while (time.time() - started < mininterval) and (len(items) < maxitems):
+        while (
+            time.time() - started < mininterval
+            and len(items) < maxitems
+        ):
             try:
                 item = self.data_queue.popleft()
             except IndexError:
@@ -44,106 +95,127 @@ class DBWriterThread(Thread):
 
     def run(self):
         while True:
-            items = self.get_items(mininterval=0.05, maxitems=200)
+            items = self.get_items(
+                mininterval=0.05,
+                maxitems=200,
+            )
+
             db_req_body = []
             stat_clients = set()
+
             for client, device_id, control_id, value in items:
-                ser_item = self.serialize_data_item(client, device_id, control_id, value)
-                if ser_item:
-                    db_req_body.append(ser_item)
+                serialized = self.serialize_data_item(
+                    client,
+                    device_id,
+                    control_id,
+                    value,
+                )
+
+                if serialized:
+                    db_req_body.append(serialized)
                     stat_clients.add(client)
 
             if db_req_body:
-                logging.info("Write %d items for %d clients" % (len(items), len(stat_clients)))
+                logging.info(
+                    "Write %d items for %d clients",
+                    len(items),
+                    len(stat_clients),
+                )
+
+                # Preserve production behaviour.
                 time.sleep(10)
+
                 try:
                     self.influx_client.write_points(db_req_body)
-                except:
-                    logging.info ("Exception during writing points")
-                    logging.exception("Exception during writing point")
+                except Exception:
+                    logging.exception(
+                        "Exception during writing points"
+                    )
 
-#        time.sleep(0.01)
+    @staticmethod
+    def serialize_data_item(
+        client,
+        device_id,
+        control_id,
+        value,
+    ):
+        value = value.replace("\n", " ")
 
-    def serialize_data_item(self, client, device_id, control_id, value):
-        value = value.replace('\n', ' ')
         if not value:
-            return
-
+            return None
 
         fields = {}
+
         try:
             value_f = float(value)
+
             if not math.isnan(value_f):
                 fields["value_f"] = value_f
         except ValueError:
             pass
+
         if "value_f" not in fields:
             fields["value_s"] = value
 
-        item = {
-            'measurement': 'mqtt_data',
-            'tags' : {
-                'client' : client,
-                "channel" : '%s/%s' % (device_id, control_id),
+        return {
+            "measurement": "mqtt_data",
+            "tags": {
+                "client": client,
+                "channel": f"{device_id}/{control_id}",
             },
-            "fields" : fields
+            "fields": fields,
         }
 
-        return item
 
-#db_writer = None
-#db_writer_1 = None
 db_writer_94 = None
 
-def on_mqtt_message(arg0, arg1, arg2=None):
-    if arg2 is None:
-        msg = arg1
-    else:
-        msg = arg2
+
+def on_mqtt_message(client, userdata, msg):
+    global db_writer_94
 
     if msg.retain:
         return
 
-    if (msg.topic.find('bridge') != -1):
-        return
-    if (msg.topic.find('homeassistant_') != -1):
-        logging.info ("Zigbee: topic="+msg.topic+", value="+msg.payload.decode('utf8'))
-#        logging.info (msg.topic[msg.topic.find('/')+1:])
-        device1=msg.topic[msg.topic.find('/')+1:]
-#        logging.info (msg.payload.decode('utf8'))
-        msg1=msg.payload.decode('utf8')[1:-1]
-#        logging.info (msg1)
-        parts1=msg1.split(',')
-        for part1 in parts1:
-#            logging.info (part1)
-#            logging.info (part1[1:part1.find(':')-1])
-            param1=part1[1:part1.find(':')-1]
-#            logging.info (part1[part1.find(':')+1:])
-            value1=part1[part1.find(':')+1:]
-#            try:
-#                db_writer.schedule_item('zigbee', device1, param1, value1)
-#                logging.info ('zigbee device: '+device1+', param: '+param1+', value: '+value1+' has been successfully written to db')
-#            except:
-#                logging.info ("Exception during schedule zigbee item 75")
-#            try:
-#                db_writer_1.schedule_item('zigbee', device1, param1, value1)
-#                logging.info ('zigbee device: '+device1+', param: '+param1+', value: '+value1+' has been successfully written to db1')
-#            except:
-#                logging.info ("Exception during schedule zigbee item 42")
-            try:
-                db_writer_94.schedule_item('zigbee', device1, param1, value1)
-#                logging.info ('zigbee device: '+device1+', param: '+param1+', value: '+value1+' has been successfully written to db94')
-            except:
-                logging.info ("Exception during schedule zigbee item 94")
+    if "bridge" in msg.topic:
         return
 
-    parts = msg.topic.split('/')
-    client = None
+    if "homeassistant_" in msg.topic:
+        logging.info(
+            "Zigbee: topic=%s, value=%s",
+            msg.topic,
+            msg.payload.decode("utf8"),
+        )
+
+        device1 = msg.topic[msg.topic.find("/") + 1:]
+        msg1 = msg.payload.decode("utf8")[1:-1]
+        parts1 = msg1.split(",")
+
+        for part1 in parts1:
+            param1 = part1[1:part1.find(":") - 1]
+            value1 = part1[part1.find(":") + 1:]
+
+            try:
+                db_writer_94.schedule_item(
+                    "zigbee",
+                    device1,
+                    param1,
+                    value1,
+                )
+            except Exception:
+                logging.exception(
+                    "Exception during schedule zigbee item 94"
+                )
+
+        return
+
+    parts = msg.topic.split("/")
+    mqtt_client = None
+
     if len(parts) < 4:
         return
 
-    if (parts[1] == 'client'):
-        client = parts[2]
+    if parts[1] == "client":
+        mqtt_client = parts[2]
         parts = parts[3:]
 
     if len(parts) != 4:
@@ -151,71 +223,84 @@ def on_mqtt_message(arg0, arg1, arg2=None):
 
     device_id = parts[1]
     control_id = parts[3]
+
     try:
-        value = msg.payload.decode('utf8')
-    except:
+        value = msg.payload.decode("utf8")
+    except Exception:
         value = "Error during decoding"
-    logging.info ("WB: topic="+msg.topic+", value="+value)
 
-#    logging.info (client)
-#    logging.info (device_id)
-#    logging.info (control_id)
-#    logging.info (value)
+    logging.info(
+        "WB: topic=%s, value=%s",
+        msg.topic,
+        value,
+    )
 
-    if (device_id == 'wb-adc'):
+    if device_id == "wb-adc":
         return
 
-#    db_writer.schedule_item(client, device_id, control_id, value)
-#    db_writer_1.schedule_item(client, device_id, control_id, value)
-    db_writer_94.schedule_item(client, device_id, control_id, value)
+    db_writer_94.schedule_item(
+        mqtt_client,
+        device_id,
+        control_id,
+        value,
+    )
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='MQTT retained message deleter', add_help=False)
 
-    parser.add_argument('-h', '--host', dest='host', type=str,
-                        help='MQTT host', default='mosquitto')
+def main():
+    global db_writer_94
 
-    parser.add_argument('-u', '--username', dest='username', type=str,
-                        help='MQTT username', default='mosquitto')
+    logging.info(
+        "Starting mqtt2influx: MQTT=%s:%d, InfluxDB=%s:%d/%s",
+        MQTT_HOST,
+        MQTT_PORT,
+        INFLUX_HOST,
+        INFLUX_PORT,
+        INFLUX_DATABASE,
+    )
 
-    parser.add_argument('-P', '--password', dest='password', type=str,
-                        help='MQTT password', default='StrongPa55')
+    influx_client = InfluxDBClient(
+        INFLUX_HOST,
+        INFLUX_PORT,
+        database=INFLUX_DATABASE,
+    )
 
-    parser.add_argument('-p', '--port', dest='port', type=int,
-                        help='MQTT port', default='1883')
+    db_writer_94 = DBWriterThread(
+        influx_client,
+        daemon=True,
+    )
+    db_writer_94.start()
 
-    mqtt_device_id = str(time.time()) + str(random.randint(0, 100000))
+    client = mqtt.Client(
+        callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+        client_id=None,
+        clean_session=True,
+        protocol=mqtt.MQTTv31,
+    )
 
-#    parser.add_argument('topic',  type=str,
-#                        help='Topic mask to unpublish retained messages from. For example: "/devices/my-device/#"', default='#')
-
-    args = parser.parse_args()
-
-    client = paho.mqtt.client.Client(client_id=None, clean_session=True, protocol=paho.mqtt.client.MQTTv31)
-
-    if args.username:
-        client.username_pw_set(args.username, args.password)
-
-#    client.tls_set(ca_certs="/etc/ssl/certs/ISRG_Root_X1.pem")
-    client.connect(args.host, args.port)
+    client.username_pw_set(
+        MQTT_USERNAME,
+        MQTT_PASSWORD,
+    )
 
     client.on_message = on_mqtt_message
 
-#    client.subscribe(args.topic)
-    client.subscribe("#")
+    client.connect(
+        MQTT_HOST,
+        MQTT_PORT,
+    )
 
-#    influx_client = InfluxDBClient('192.168.1.75', 8086, database='mqtt_data')
-#    influx_client_1 = InfluxDBClient('192.168.1.42', 8086, database='mqtt_data')
-    influx_client_94 = InfluxDBClient('influxdb', 8086, database='mqtt_data')
-#    db_writer =  DBWriterThread(influx_client, daemon=True)
-#    db_writer_1 =  DBWriterThread(influx_client_1, daemon=True)
-    db_writer_94 =  DBWriterThread(influx_client_94, daemon=True)
-#    db_writer.start()
-#    db_writer_1.start()
-    db_writer_94.start()
+    client.subscribe(MQTT_TOPIC)
 
-
-    while 1:
+    while True:
         rc = client.loop()
-        if rc != 0:
-            break
+
+        if rc != mqtt.MQTT_ERR_SUCCESS:
+            logging.error(
+                "MQTT loop stopped with return code %s",
+                rc,
+            )
+            return int(rc)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

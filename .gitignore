@@ -1,0 +1,17 @@
+# Runtime secrets
+/secrets/*
+!/secrets/.gitkeep
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Local artifacts
+*.tar
+*.tar.gz
+*.log
