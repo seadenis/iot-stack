@@ -1,0 +1,96 @@
+name: mqtt2influx CI
+
+on:
+  pull_request:
+    paths:
+      - "mqtt2influx.py"
+      - "python-ingest/**"
+      - "iot-stack-compose.yml"
+      - ".dockerignore"
+      - ".github/workflows/mqtt2influx-ci.yml"
+      - ".gitignore"
+
+  push:
+    branches:
+      - main
+    paths:
+      - "mqtt2influx.py"
+      - "python-ingest/**"
+      - "iot-stack-compose.yml"
+      - ".dockerignore"
+      - ".github/workflows/mqtt2influx-ci.yml"
+      - ".gitignore"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check Python syntax
+        run: |
+          python3 -m py_compile mqtt2influx.py
+
+      - name: Build mqtt2influx image
+        run: |
+          docker build \
+            -f python-ingest/Dockerfile \
+            -t iot-stack-mqtt2influx:ci \
+            .
+
+      - name: Verify embedded application
+        run: |
+          docker run --rm \
+            --network none \
+            --entrypoint sh \
+            iot-stack-mqtt2influx:ci \
+            -c '
+              test -f /app/mqtt2influx.py
+              ! command -v git
+              ! grep -R "git clone" /app
+            '
+
+      - name: Verify pinned dependency versions
+        run: |
+          docker run --rm \
+            --network none \
+            --entrypoint python \
+            iot-stack-mqtt2influx:ci \
+            -c '
+          import importlib.metadata as m
+          assert m.version("paho-mqtt") == "2.1.0"
+          assert m.version("influxdb") == "5.3.1"
+          print("Dependency versions: OK")
+          '
+
+      - name: Validate Docker Compose configuration
+        run: |
+          mkdir -p secrets
+          printf 'ci-user\n' > secrets/mqtt2influx_username
+          printf 'ci-password\n' > secrets/mqtt2influx_password
+
+          docker compose \
+            -f iot-stack-compose.yml \
+            config >/dev/null
+
+      - name: Ensure secrets are not tracked
+        run: |
+          TRACKED_SENSITIVE="$(
+            git ls-files |
+              grep -E '(^|/)(secrets/.*|\.env($|\.)|passwd$)' |
+              grep -vE '(^|/)\.env\.example$' ||
+              true
+          )"
+
+          if [ -n "$TRACKED_SENSITIVE" ]; then
+            echo "Sensitive runtime files are tracked by Git:"
+            printf '%s\n' "$TRACKED_SENSITIVE"
+            exit 1
+          fi
+
+          echo "No sensitive runtime files are tracked"

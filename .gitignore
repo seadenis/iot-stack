@@ -1,0 +1,16 @@
+# Runtime secrets
+/secrets/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Local artifacts
+*.tar
+*.tar.gz
+*.log

@@ -43,20 +43,34 @@ services:
       start_period: 20s
 
   mqtt2influx:
-    build: ./python-ingest
+    build:
+      context: .
+      dockerfile: python-ingest/Dockerfile
+    image: iot-stack-mqtt2influx:local
     restart: unless-stopped
     container_name: mqtt2influx
+
     depends_on:
-      influxdb: { condition: service_started }
-      mosquitto: { condition: service_started }
+      influxdb:
+        condition: service_started
+      mosquitto:
+        condition: service_started
+
     environment:
-      - MQTT_HOST=mosquitto
-      - MQTT_PORT=1883
-      - INFLUX_HOST=influxdb
-      - INFLUX_PORT=8086
-      - TZ=Europe/Moscow
-    volumes:
-      - ./secrets:/run/secrets:ro
+      MQTT_HOST: mosquitto
+      MQTT_PORT: "1883"
+      MQTT_TOPIC: "#"
+      INFLUX_HOST: influxdb
+      INFLUX_PORT: "8086"
+      INFLUX_DATABASE: mqtt_data
+      MQTT_USERNAME_FILE: /run/secrets/mqtt2influx_username
+      MQTT_PASSWORD_FILE: /run/secrets/mqtt2influx_password
+      TZ: Europe/Moscow
+
+    secrets:
+      - mqtt2influx_username
+      - mqtt2influx_password
+
     logging:
       driver: json-file
       options:
@@ -129,3 +143,10 @@ volumes:
   influxdb-data:
   kapacitor-data:
   grafana-storage:
+
+secrets:
+  mqtt2influx_username:
+    file: ./secrets/mqtt2influx_username
+
+  mqtt2influx_password:
+    file: ./secrets/mqtt2influx_password

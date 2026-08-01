@@ -1,0 +1,6 @@
+**
+
+!mqtt2influx.py
+!python-ingest/
+!python-ingest/Dockerfile
+!python-ingest/requirements.txt
