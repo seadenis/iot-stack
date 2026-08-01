@@ -8,6 +8,7 @@ on:
       - "iot-stack-compose.yml"
       - ".dockerignore"
       - ".github/workflows/mqtt2influx-ci.yml"
+      - ".gitignore"
 
   push:
     branches:
@@ -18,6 +19,7 @@ on:
       - "iot-stack-compose.yml"
       - ".dockerignore"
       - ".github/workflows/mqtt2influx-ci.yml"
+      - ".gitignore"
 
 permissions:
   contents: read
@@ -78,7 +80,17 @@ jobs:
 
       - name: Ensure secrets are not tracked
         run: |
-          if git ls-files | grep -E '(^|/)(secrets/.*|\.env|passwd)$'; then
-            echo "Sensitive runtime file is tracked by Git"
+          TRACKED_SENSITIVE="$(
+            git ls-files |
+              grep -E '(^|/)(secrets/.*|\.env($|\.)|passwd$)' |
+              grep -vE '(^|/)\.env\.example$' ||
+              true
+          )"
+
+          if [ -n "$TRACKED_SENSITIVE" ]; then
+            echo "Sensitive runtime files are tracked by Git:"
+            printf '%s\n' "$TRACKED_SENSITIVE"
             exit 1
           fi
+
+          echo "No sensitive runtime files are tracked"
