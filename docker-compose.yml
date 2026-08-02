@@ -17,8 +17,9 @@ services:
       com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
 
   influxdb:
-    image: influxdb:1.8
+    image: influxdb:1.8.10
     restart: unless-stopped
+    container_name: influxdb
     volumes:
       - influxdb-data:/root
       - ./secrets:/run/secrets
@@ -33,19 +34,17 @@ services:
       - INFLUXDB_COORDINATOR_MAX_SELECT_POINT=100
       - INFLUXDB_HTTP_MAX_ROW_LIMIT=100000
       - INFLUXDB_DB=mqtt_data
-    labels:
-      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
+        #    labels:
+        #      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
+    mem_limit: 500m
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:8086/ping"]
-      interval: 10s
+      interval: 1m
       timeout: 3s
-      retries: 5
+      retries: 3
       start_period: 20s
 
   mqtt2influx:
-    build:
-      context: .
-      dockerfile: python-ingest/Dockerfile
     image: iot-stack-mqtt2influx:local
     restart: unless-stopped
     container_name: mqtt2influx
