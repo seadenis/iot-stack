@@ -5,7 +5,7 @@ on:
     paths:
       - "mqtt2influx.py"
       - "python-ingest/**"
-      - "iot-stack-compose.yml"
+      - "docker-compose.yml"
       - ".dockerignore"
       - ".github/workflows/mqtt2influx-ci.yml"
       - ".gitignore"
@@ -16,7 +16,7 @@ on:
     paths:
       - "mqtt2influx.py"
       - "python-ingest/**"
-      - "iot-stack-compose.yml"
+      - "docker-compose.yml"
       - ".dockerignore"
       - ".github/workflows/mqtt2influx-ci.yml"
       - ".gitignore"
@@ -75,7 +75,7 @@ jobs:
           printf 'ci-password\n' > secrets/mqtt2influx_password
 
           docker compose \
-            -f iot-stack-compose.yml \
+            -f docker-compose.yml \
             config >/dev/null
 
       - name: Ensure secrets are not tracked
