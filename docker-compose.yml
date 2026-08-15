@@ -27,14 +27,12 @@ services:
       - ./influxdb/backup:/backup
       - ./influxdb/etc:/etc/influxdb
     ports:
-      - "0.0.0.0:8086:8086"
+      - "127.0.0.1:8086:8086"
     environment:
-      - DOCKER_INFLUXDB_INIT_USERNAME=admin
-      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_TOKEN}
       - INFLUXDB_COORDINATOR_MAX_SELECT_POINT=100
       - INFLUXDB_HTTP_MAX_ROW_LIMIT=100000
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
       - INFLUXDB_DATA_QUERY_LOG_ENABLED=false
-      - INFLUXDB_DB=mqtt_data
         #    labels:
         #      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
     mem_limit: 500m
@@ -88,6 +86,7 @@ services:
 #    user: root
     restart: unless-stopped
     container_name: grafana
+    entrypoint: ["/bin/sh", "/usr/local/bin/grafana-entrypoint-with-secrets.sh"]
     depends_on:
       influxdb: { condition: service_started }
     volumes:
@@ -96,6 +95,7 @@ services:
       - ./grafana/provisioning/dashboards/json:/var/lib/grafana/dashboards/json:ro
       - grafana-storage:/var/lib/grafana
       - ./grafana/custom.ini:/etc/grafana/custom.ini
+      - ./grafana/entrypoint-with-secrets.sh:/usr/local/bin/grafana-entrypoint-with-secrets.sh:ro
     ports:
       - "0.0.0.0:3000:3000"
     environment:
@@ -108,6 +108,8 @@ services:
 #    labels:
 #      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
     expose: ["3000"]
+    secrets:
+      - influx_grafana_password
 
   nginx:
     image: nginx:1.29-alpine
@@ -150,6 +152,8 @@ volumes:
   grafana-storage:
 
 secrets:
+  influx_grafana_password:
+    file: ./secrets/influx_grafana_password
   mqtt2influx_username:
     file: ./secrets/mqtt2influx_username
 
