@@ -6,8 +6,9 @@ import os
 import sys
 import time
 from collections import deque
+from datetime import datetime, timezone
 from pathlib import Path
-from threading import Thread
+from threading import Lock, Thread
 
 import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
@@ -26,6 +27,16 @@ def env_int(name, default):
     except ValueError as exc:
         raise RuntimeError(
             f"Environment variable {name} must be an integer"
+        ) from exc
+
+
+def env_float(name, default):
+    value = os.getenv(name, str(default))
+    try:
+        return float(value)
+    except ValueError as exc:
+        raise RuntimeError(
+            f"Environment variable {name} must be a number"
         ) from exc
 
 
@@ -54,6 +65,10 @@ MQTT_TOPIC = os.getenv("MQTT_TOPIC", "#")
 INFLUX_HOST = os.getenv("INFLUX_HOST", "influxdb")
 INFLUX_PORT = env_int("INFLUX_PORT", 8086)
 INFLUX_DATABASE = os.getenv("INFLUX_DATABASE", "mqtt_data")
+INFLUX_USERNAME = os.getenv("INFLUX_USERNAME", "mqtt2influx_wr")
+INFLUX_TIMEOUT = env_float("INFLUX_TIMEOUT", 5)
+INFLUX_RETRY_INITIAL = env_float("INFLUX_RETRY_INITIAL", 1)
+INFLUX_RETRY_MAX = env_float("INFLUX_RETRY_MAX", 30)
 
 MQTT_USERNAME = read_secret(
     "MQTT_USERNAME_FILE",
@@ -65,33 +80,88 @@ MQTT_PASSWORD = read_secret(
     "/run/secrets/mqtt2influx_password",
 )
 
+INFLUX_PASSWORD = read_secret(
+    "INFLUX_PASSWORD_FILE",
+    "/run/secrets/influx_mqtt2influx_password",
+)
+
 
 class DBWriterThread(Thread):
     def __init__(self, influx_client, *args, **kwargs):
         self.influx_client = influx_client
         self.data_queue = deque()
+        self.queue_lock = Lock()
         super().__init__(*args, **kwargs)
 
     def schedule_item(self, client, device_id, control_id, value):
-        item = (client, device_id, control_id, value)
-        self.data_queue.append(item)
+        event_time = (
+            datetime.now(timezone.utc)
+            .isoformat(timespec="microseconds")
+            .replace("+00:00", "Z")
+        )
+        item = (
+            event_time,
+            client,
+            device_id,
+            control_id,
+            value,
+        )
+
+        with self.queue_lock:
+            self.data_queue.append(item)
+
+    def queue_size(self):
+        with self.queue_lock:
+            return len(self.data_queue)
 
     def get_items(self, mininterval, maxitems):
-        started = time.time()
+        started = time.monotonic()
         items = []
 
         while (
-            time.time() - started < mininterval
+            time.monotonic() - started < mininterval
             and len(items) < maxitems
         ):
-            try:
-                item = self.data_queue.popleft()
-            except IndexError:
+            item = None
+
+            with self.queue_lock:
+                if self.data_queue:
+                    item = self.data_queue.popleft()
+
+            if item is None:
                 time.sleep(mininterval * 0.1)
             else:
                 items.append(item)
 
         return items
+
+    def write_with_retry(self, db_req_body, item_count, client_count):
+        delay = max(0.1, INFLUX_RETRY_INITIAL)
+
+        while True:
+            try:
+                ok = self.influx_client.write_points(db_req_body)
+                if ok is False:
+                    raise RuntimeError(
+                        "InfluxDB write_points returned False"
+                    )
+
+                logging.info(
+                    "Wrote %d items for %d clients",
+                    item_count,
+                    client_count,
+                )
+                return
+            except Exception:
+                logging.exception(
+                    "InfluxDB write failed; "
+                    "batch=%d queued=%d retry_in=%.1fs",
+                    item_count,
+                    self.queue_size(),
+                    delay,
+                )
+                time.sleep(delay)
+                delay = min(delay * 2, max(INFLUX_RETRY_MAX, 0.1))
 
     def run(self):
         while True:
@@ -103,8 +173,15 @@ class DBWriterThread(Thread):
             db_req_body = []
             stat_clients = set()
 
-            for client, device_id, control_id, value in items:
+            for (
+                event_time,
+                client,
+                device_id,
+                control_id,
+                value,
+            ) in items:
                 serialized = self.serialize_data_item(
+                    event_time,
                     client,
                     device_id,
                     control_id,
@@ -117,23 +194,26 @@ class DBWriterThread(Thread):
 
             if db_req_body:
                 logging.info(
-                    "Write %d items for %d clients",
+                    "Prepared %d points from %d MQTT items "
+                    "for %d clients; queued=%d",
+                    len(db_req_body),
                     len(items),
                     len(stat_clients),
+                    self.queue_size(),
                 )
 
                 # Preserve production behaviour.
                 time.sleep(10)
 
-                try:
-                    self.influx_client.write_points(db_req_body)
-                except Exception:
-                    logging.exception(
-                        "Exception during writing points"
-                    )
+                self.write_with_retry(
+                    db_req_body,
+                    len(db_req_body),
+                    len(stat_clients),
+                )
 
     @staticmethod
     def serialize_data_item(
+        event_time,
         client,
         device_id,
         control_id,
@@ -159,6 +239,7 @@ class DBWriterThread(Thread):
 
         return {
             "measurement": "mqtt_data",
+            "time": event_time,
             "tags": {
                 "client": client,
                 "channel": f"{device_id}/{control_id}",
@@ -246,6 +327,43 @@ def on_mqtt_message(client, userdata, msg):
     )
 
 
+def on_mqtt_connect(client, userdata, flags, reason_code, properties):
+    if reason_code != 0:
+        logging.error(
+            "MQTT connection failed: %s",
+            reason_code,
+        )
+        return
+
+    rc, _ = client.subscribe(MQTT_TOPIC)
+    if rc != mqtt.MQTT_ERR_SUCCESS:
+        logging.error(
+            "MQTT subscribe failed: topic=%s rc=%s",
+            MQTT_TOPIC,
+            rc,
+        )
+        return
+
+    logging.info(
+        "MQTT connected and subscribed: topic=%s",
+        MQTT_TOPIC,
+    )
+
+
+def on_mqtt_disconnect(
+    client,
+    userdata,
+    disconnect_flags,
+    reason_code,
+    properties,
+):
+    if reason_code != 0:
+        logging.warning(
+            "MQTT disconnected unexpectedly: %s",
+            reason_code,
+        )
+
+
 def main():
     global db_writer_94
 
@@ -261,7 +379,10 @@ def main():
     influx_client = InfluxDBClient(
         INFLUX_HOST,
         INFLUX_PORT,
+        username=INFLUX_USERNAME,
+        password=INFLUX_PASSWORD,
         database=INFLUX_DATABASE,
+        timeout=INFLUX_TIMEOUT,
     )
 
     db_writer_94 = DBWriterThread(
@@ -282,24 +403,26 @@ def main():
         MQTT_PASSWORD,
     )
 
+    client.on_connect = on_mqtt_connect
+    client.on_disconnect = on_mqtt_disconnect
     client.on_message = on_mqtt_message
 
-    client.connect(
+    client.reconnect_delay_set(
+        min_delay=1,
+        max_delay=30,
+    )
+
+    client.connect_async(
         MQTT_HOST,
         MQTT_PORT,
     )
 
-    client.subscribe(MQTT_TOPIC)
-
-    while True:
-        rc = client.loop()
-
-        if rc != mqtt.MQTT_ERR_SUCCESS:
-            logging.error(
-                "MQTT loop stopped with return code %s",
-                rc,
-            )
-            return int(rc)
+    return int(
+        client.loop_forever(
+            retry_first_connection=True,
+        )
+        or 0
+    )
 
 
 if __name__ == "__main__":

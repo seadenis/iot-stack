@@ -62,6 +62,11 @@ services:
       INFLUX_HOST: influxdb
       INFLUX_PORT: "8086"
       INFLUX_DATABASE: mqtt_data
+      INFLUX_USERNAME: mqtt2influx_wr
+      INFLUX_PASSWORD_FILE: /run/secrets/influx_mqtt2influx_password
+      INFLUX_TIMEOUT: "5"
+      INFLUX_RETRY_INITIAL: "1"
+      INFLUX_RETRY_MAX: "30"
       MQTT_USERNAME_FILE: /run/secrets/mqtt2influx_username
       MQTT_PASSWORD_FILE: /run/secrets/mqtt2influx_password
       TZ: Europe/Moscow
@@ -69,6 +74,7 @@ services:
     secrets:
       - mqtt2influx_username
       - mqtt2influx_password
+      - influx_mqtt2influx_password
 
     logging:
       driver: json-file
@@ -148,3 +154,6 @@ secrets:
 
   mqtt2influx_password:
     file: ./secrets/mqtt2influx_password
+
+  influx_mqtt2influx_password:
+    file: ./secrets/influx_mqtt2influx_password

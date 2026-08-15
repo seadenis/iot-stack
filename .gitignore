@@ -14,3 +14,4 @@ __pycache__/
 *.tar
 *.tar.gz
 *.log
+secrets/influx_*_password
