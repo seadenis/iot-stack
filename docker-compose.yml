@@ -33,6 +33,7 @@ services:
       - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_TOKEN}
       - INFLUXDB_COORDINATOR_MAX_SELECT_POINT=100
       - INFLUXDB_HTTP_MAX_ROW_LIMIT=100000
+      - INFLUXDB_DATA_QUERY_LOG_ENABLED=false
       - INFLUXDB_DB=mqtt_data
         #    labels:
         #      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
