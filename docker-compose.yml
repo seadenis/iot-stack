@@ -11,8 +11,8 @@ services:
       - /etc/letsencrypt/live/dansu.ru/fullchain.pem:/mosquitto/certs/fullchain.pem
       - /etc/letsencrypt/live/dansu.ru/privkey.pem:/mosquitto/certs/privkey.pem
     ports:
-      - "1883:1883"
-      - "8883:8883"
+      - "0.0.0.0:1883:1883"
+      - "0.0.0.0:8883:8883"
     labels:
       com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
 
@@ -27,7 +27,7 @@ services:
       - ./influxdb/backup:/backup
       - ./influxdb/etc:/etc/influxdb
     ports:
-      - "8086:8086"
+      - "0.0.0.0:8086:8086"
     environment:
       - DOCKER_INFLUXDB_INIT_USERNAME=admin
       - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_TOKEN}
@@ -90,7 +90,7 @@ services:
       - grafana-storage:/var/lib/grafana
       - ./grafana/custom.ini:/etc/grafana/custom.ini
     ports:
-      - "3000:3000"
+      - "0.0.0.0:3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_ADMIN_PASSWORD}
       - GF_SERVER_ROOT_URL=https://dansu.ru
@@ -111,9 +111,9 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+      - "127.0.0.1:8080:8080"
     depends_on: [grafana]
 #    labels:
 #      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
