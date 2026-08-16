@@ -1,0 +1,20 @@
+dbrp "mqtt_data"."autogen"
+
+var uv =
+    batch
+        |query('''
+            SELECT last("value_f") AS "uv_invalid"
+            FROM "mqtt_data"."autogen"."mqtt_data"
+            WHERE "client" = 'wb_AMTXYWW3'
+              AND "channel" = 'Meshtastic/uv_invalid'
+        ''')
+            .period(2m)
+            .every(1m)
+
+uv
+    |alert()
+        .id('meshtastic_uv_invalid')
+        .message('Meshtastic UV validity: {{ .Level }}; value={{ index .Fields "uv_invalid" }}')
+        .crit(lambda: "uv_invalid" >= 1.0)
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/uv_invalid-alert.log')

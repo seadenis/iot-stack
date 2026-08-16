@@ -81,6 +81,41 @@ services:
         max-size: "1m"
         max-file: "3"
 
+  kapacitor:
+    image: kapacitor:1.8.6
+    restart: unless-stopped
+    container_name: kapacitor
+    entrypoint: ["/bin/sh", "/usr/local/bin/kapacitor-entrypoint-with-secrets.sh"]
+
+    depends_on:
+      influxdb:
+        condition: service_started
+
+    volumes:
+      - kapacitor-data:/var/lib/kapacitor
+      - ./kapacitor.conf:/etc/kapacitor/kapacitor.conf:ro
+      - ./kapacitor-uv-invalid.tick:/etc/kapacitor/load/tasks/uv_invalid.tick:ro
+      - ./kapacitor-entrypoint-with-secrets.sh:/usr/local/bin/kapacitor-entrypoint-with-secrets.sh:ro
+
+    secrets:
+      - kapacitor_influx_password
+
+    environment:
+      - TZ=Europe/Moscow
+
+    healthcheck:
+      test: ["CMD", "kapacitor", "stats", "general"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+
   grafana:
     image: grafana/grafana:12.3.0-19020365962
 #    user: root
@@ -154,6 +189,9 @@ volumes:
 secrets:
   influx_grafana_password:
     file: ./secrets/influx_grafana_password
+  kapacitor_influx_password:
+    file: ./secrets/kapacitor_influx_password
+
   mqtt2influx_username:
     file: ./secrets/mqtt2influx_username
 
