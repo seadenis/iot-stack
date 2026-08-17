@@ -21,3 +21,26 @@ uv
         .mqtt('dansu/alerts/uv_invalid')
             .brokerName('home-alerts')
             .qos(1)
+
+// No-data watchdog.
+// Check every minute whether uv_invalid has been seen during the last 5 minutes.
+var uv_presence =
+    batch
+        |query('''
+            SELECT last("value_f") AS "uv_seen"
+            FROM "mqtt_data"."autogen"."mqtt_data"
+            WHERE "client" = 'wb_AMTXYWW3'
+              AND "channel" = 'Meshtastic/uv_invalid'
+        ''')
+            .period(5m)
+            .every(1m)
+
+uv_presence
+    |deadman(0.0, 1m)
+        .id('meshtastic_uv_no_data')
+        .message('Meshtastic UV data: {{ if eq .Level "OK" }}RESTORED{{ else }}NO_DATA{{ end }}')
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/uv_no_data-alert.log')
+        .mqtt('dansu/alerts/uv_no_data')
+            .brokerName('home-alerts')
+            .qos(1)
