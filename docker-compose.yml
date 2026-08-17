@@ -99,6 +99,7 @@ services:
 
     secrets:
       - kapacitor_influx_password
+      - kapacitor_mqtt_password
 
     environment:
       - TZ=Europe/Moscow
@@ -191,6 +192,9 @@ secrets:
     file: ./secrets/influx_grafana_password
   kapacitor_influx_password:
     file: ./secrets/kapacitor_influx_password
+
+  kapacitor_mqtt_password:
+    file: ./secrets/kapacitor_mqtt_password
 
   mqtt2influx_username:
     file: ./secrets/mqtt2influx_username

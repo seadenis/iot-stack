@@ -18,3 +18,6 @@ uv
         .crit(lambda: "uv_invalid" >= 1.0)
         .stateChangesOnly()
         .log('/var/lib/kapacitor/uv_invalid-alert.log')
+        .mqtt('dansu/alerts/uv_invalid')
+            .brokerName('home-alerts')
+            .qos(1)
