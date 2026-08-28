@@ -133,7 +133,7 @@ services:
       - ./grafana/custom.ini:/etc/grafana/custom.ini
       - ./grafana/entrypoint-with-secrets.sh:/usr/local/bin/grafana-entrypoint-with-secrets.sh:ro
     ports:
-      - "0.0.0.0:3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_ADMIN_PASSWORD}
       - GF_SERVER_ROOT_URL=https://dansu.ru
