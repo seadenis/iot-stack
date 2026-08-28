@@ -130,7 +130,6 @@ services:
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
       - ./grafana/provisioning/dashboards/json:/var/lib/grafana/dashboards/json:ro
       - grafana-storage:/var/lib/grafana
-      - ./grafana/custom.ini:/etc/grafana/custom.ini
       - ./grafana/entrypoint-with-secrets.sh:/usr/local/bin/grafana-entrypoint-with-secrets.sh:ro
     ports:
       - "127.0.0.1:3000:3000"
@@ -140,6 +139,7 @@ services:
       - GF_SERVER_SERVE_FROM_SUB_PATH=false
       - GF_AUTH_ANONYMOUS_ENABLED=false
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SECURITY_ALLOW_EMBEDDING=false
       - GF_LIVE_ENABLED=false
 #    labels:
 #      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
