@@ -140,6 +140,7 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=false
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_SECURITY_ALLOW_EMBEDDING=false
+      - GF_SECURITY_X_XSS_PROTECTION=false
       - GF_SECURITY_CONTENT_SECURITY_POLICY=true
       - GF_LIVE_ENABLED=false
 #    labels:
