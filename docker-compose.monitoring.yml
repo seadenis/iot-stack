@@ -1,0 +1,39 @@
+services:
+  telegraf-monitoring:
+    image: telegraf:1.36.3-alpine
+    restart: unless-stopped
+    container_name: telegraf-monitoring
+
+    depends_on:
+      influxdb:
+        condition: service_started
+      mosquitto:
+        condition: service_started
+
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/telegraf-monitoring-entrypoint.sh
+
+    volumes:
+      - ./telegraf/monitoring.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf/monitoring-entrypoint-with-secrets.sh:/usr/local/bin/telegraf-monitoring-entrypoint.sh:ro
+
+    secrets:
+      - monitoring_mqtt_ingest_password
+      - influx_monitoring_password
+
+    environment:
+      - TZ=Europe/Moscow
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+
+secrets:
+  monitoring_mqtt_ingest_password:
+    file: ./secrets/monitoring_mqtt_ingest_password
+
+  influx_monitoring_password:
+    file: ./secrets/influx_monitoring_password
