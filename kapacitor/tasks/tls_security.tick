@@ -1,0 +1,42 @@
+dbrp "monitoring"."raw_180d"
+
+var tls =
+    batch
+        |query('''
+            SELECT
+                last("tls10_tested") AS "tls10_tested",
+                last("tls10_negotiated") AS "tls10_negotiated",
+                last("tls10_rejected") AS "tls10_rejected",
+                last("tls11_tested") AS "tls11_tested",
+                last("tls11_negotiated") AS "tls11_negotiated",
+                last("tls11_rejected") AS "tls11_rejected",
+                last("tls12_ok") AS "tls12_ok",
+                last("tls13_ok") AS "tls13_ok"
+            FROM "monitoring"."raw_180d"."dansu_tls"
+            WHERE "source" = 'dansu-ops'
+              AND "target" = 'dansu.ru'
+        ''')
+            .period(10m)
+            .every(1m)
+
+tls
+    |alert()
+        .id('dansu_tls_security')
+        .message('DANSU TLS: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; TLS1.0 tested={{ index .Fields "tls10_tested" }} negotiated={{ index .Fields "tls10_negotiated" }} rejected={{ index .Fields "tls10_rejected" }}; TLS1.1 tested={{ index .Fields "tls11_tested" }} negotiated={{ index .Fields "tls11_negotiated" }} rejected={{ index .Fields "tls11_rejected" }}; TLS1.2={{ index .Fields "tls12_ok" }}; TLS1.3={{ index .Fields "tls13_ok" }}')
+        .warn(lambda:
+            "tls10_tested" != 1
+            OR "tls11_tested" != 1
+            OR ("tls10_negotiated" == 0 AND "tls10_rejected" != 1)
+            OR ("tls11_negotiated" == 0 AND "tls11_rejected" != 1)
+        )
+        .crit(lambda:
+            "tls10_negotiated" != 0
+            OR "tls11_negotiated" != 0
+            OR "tls12_ok" != 1
+            OR "tls13_ok" != 1
+        )
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/dansu_tls_security-alert.log')
+        .mqtt('dansu/alerts/monitoring/tls_security')
+            .brokerName('home-alerts')
+            .qos(1)

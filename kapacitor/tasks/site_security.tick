@@ -1,0 +1,95 @@
+dbrp "monitoring"."raw_180d"
+
+// ------------------------------------------------------------------
+// DNS
+// ------------------------------------------------------------------
+
+var dns =
+    batch
+        |query('''
+            SELECT
+                last("a_ok") AS "a_ok",
+                last("a_count") AS "a_count",
+                last("a_rc") AS "a_rc",
+                last("aaaa_count") AS "aaaa_count",
+                last("aaaa_rc") AS "aaaa_rc"
+            FROM "monitoring"."raw_180d"."dansu_dns"
+            WHERE "source" = 'dansu-ops'
+              AND "target" = 'dansu.ru'
+        ''')
+            .period(10m)
+            .every(1m)
+
+dns
+    |alert()
+        .id('dansu_dns_health')
+        .message('DANSU DNS: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; A_ok={{ index .Fields "a_ok" }}; A_count={{ index .Fields "a_count" }}; A_rc={{ index .Fields "a_rc" }}; AAAA_count={{ index .Fields "aaaa_count" }}; AAAA_rc={{ index .Fields "aaaa_rc" }}')
+        .warn(lambda:
+            "a_ok" == 1
+            AND "a_count" >= 1
+            AND "a_rc" == 0
+            AND "aaaa_rc" != 0
+        )
+        .crit(lambda:
+            "a_ok" != 1
+            OR "a_count" < 1
+            OR "a_rc" != 0
+        )
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/dansu_dns_health-alert.log')
+        .mqtt('dansu/alerts/monitoring/dns_health')
+            .brokerName('home-alerts')
+            .qos(1)
+
+// ------------------------------------------------------------------
+// HTTP security headers
+//
+// HSTS or CSP disappearance is CRITICAL.
+// Other required security-header regressions are WARNING.
+// ------------------------------------------------------------------
+
+var headers =
+    batch
+        |query('''
+            SELECT
+                last("curl_rc") AS "curl_rc",
+                last("hsts") AS "hsts",
+                last("csp") AS "csp",
+                last("x_content_type_options") AS "x_content_type_options",
+                last("referrer_policy") AS "referrer_policy",
+                last("permissions_policy") AS "permissions_policy",
+                last("x_frame_options") AS "x_frame_options",
+                last("required_ok") AS "required_ok"
+            FROM "monitoring"."raw_180d"."dansu_security_headers"
+            WHERE "source" = 'dansu-ops'
+              AND "target" = 'dansu.ru'
+        ''')
+            .period(10m)
+            .every(1m)
+
+headers
+    |alert()
+        .id('dansu_security_headers')
+        .message('DANSU security headers: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; curl_rc={{ index .Fields "curl_rc" }}; HSTS={{ index .Fields "hsts" }}; CSP={{ index .Fields "csp" }}; XCTO={{ index .Fields "x_content_type_options" }}; Referrer={{ index .Fields "referrer_policy" }}; Permissions={{ index .Fields "permissions_policy" }}; XFO={{ index .Fields "x_frame_options" }}')
+        .warn(lambda:
+            "curl_rc" == 0
+            AND "hsts" == 1
+            AND "csp" == 1
+            AND (
+                "required_ok" != 1
+                OR "x_content_type_options" != 1
+                OR "referrer_policy" != 1
+                OR "permissions_policy" != 1
+                OR "x_frame_options" != 1
+            )
+        )
+        .crit(lambda:
+            "curl_rc" != 0
+            OR "hsts" != 1
+            OR "csp" != 1
+        )
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/dansu_security_headers-alert.log')
+        .mqtt('dansu/alerts/monitoring/security_headers')
+            .brokerName('home-alerts')
+            .qos(1)

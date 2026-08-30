@@ -1,0 +1,24 @@
+dbrp "monitoring"."raw_180d"
+
+// Fast HOME probe runs every minute.
+// Alert when no heartbeat has been visible for more than ~3 minutes.
+var home_presence =
+    batch
+        |query('''
+            SELECT last("value") AS "heartbeat"
+            FROM "monitoring"."raw_180d"."dansu_home_heartbeat"
+            WHERE "source" = 'dansu-ops'
+              AND "target" = 'dansu.ru'
+        ''')
+            .period(3m)
+            .every(1m)
+
+home_presence
+    |deadman(0.0, 1m)
+        .id('dansu_home_deadman')
+        .message('DANSU HOME probe: {{ if eq .Level "OK" }}RESTORED{{ else }}NO_DATA >3m{{ end }}')
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/dansu_home_deadman-alert.log')
+        .mqtt('dansu/alerts/monitoring/home_deadman')
+            .brokerName('home-alerts')
+            .qos(1)

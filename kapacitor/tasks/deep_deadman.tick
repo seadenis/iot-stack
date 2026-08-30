@@ -1,0 +1,24 @@
+dbrp "monitoring"."raw_180d"
+
+// Deep HOME probe runs every 5 minutes.
+// Twelve minutes tolerate two missed runs without hiding a real outage.
+var deep_presence =
+    batch
+        |query('''
+            SELECT last("value") AS "heartbeat"
+            FROM "monitoring"."raw_180d"."dansu_deep_heartbeat"
+            WHERE "source" = 'dansu-ops'
+              AND "target" = 'dansu.ru'
+        ''')
+            .period(12m)
+            .every(1m)
+
+deep_presence
+    |deadman(0.0, 1m)
+        .id('dansu_deep_deadman')
+        .message('DANSU deep probe: {{ if eq .Level "OK" }}RESTORED{{ else }}NO_DATA >12m{{ end }}')
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/dansu_deep_deadman-alert.log')
+        .mqtt('dansu/alerts/monitoring/deep_deadman')
+            .brokerName('home-alerts')
+            .qos(1)

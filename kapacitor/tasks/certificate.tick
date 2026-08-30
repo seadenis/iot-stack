@@ -1,0 +1,36 @@
+dbrp "monitoring"."raw_180d"
+
+var certificate =
+    batch
+        |query('''
+            SELECT
+                last("verify_ok") AS "verify_ok",
+                last("parse_ok") AS "parse_ok",
+                last("days_remaining") AS "days_remaining"
+            FROM "monitoring"."raw_180d"."dansu_certificate"
+            WHERE "source" = 'dansu-ops'
+              AND "target" = 'dansu.ru'
+        ''')
+            .period(10m)
+            .every(1m)
+
+certificate
+    |alert()
+        .id('dansu_certificate')
+        .message('DANSU certificate: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; verify={{ index .Fields "verify_ok" }}; parse={{ index .Fields "parse_ok" }}; days_remaining={{ index .Fields "days_remaining" }}')
+        .warn(lambda:
+            "verify_ok" == 1
+            AND "parse_ok" == 1
+            AND "days_remaining" < 21
+            AND "days_remaining" >= 7
+        )
+        .crit(lambda:
+            "verify_ok" != 1
+            OR "parse_ok" != 1
+            OR "days_remaining" < 7
+        )
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/dansu_certificate-alert.log')
+        .mqtt('dansu/alerts/monitoring/certificate')
+            .brokerName('home-alerts')
+            .qos(1)

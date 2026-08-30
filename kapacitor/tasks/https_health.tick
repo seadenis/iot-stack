@@ -1,0 +1,42 @@
+dbrp "monitoring"."raw_180d"
+
+var https =
+    batch
+        |query('''
+            SELECT
+                last("ok") AS "ok",
+                last("curl_rc") AS "curl_rc",
+                last("initial_http_code") AS "initial_http_code",
+                last("final_http_code") AS "final_http_code",
+                last("redirects") AS "redirects",
+                last("total_ms") AS "total_ms"
+            FROM "monitoring"."raw_180d"."dansu_https"
+            WHERE "source" = 'dansu-ops'
+              AND "target" = 'dansu.ru'
+        ''')
+            .period(3m)
+            .every(1m)
+
+https
+    |alert()
+        .id('dansu_https_health')
+        .message('DANSU HTTPS: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; curl_rc={{ index .Fields "curl_rc" }}; initial={{ index .Fields "initial_http_code" }}; final={{ index .Fields "final_http_code" }}; redirects={{ index .Fields "redirects" }}; total_ms={{ index .Fields "total_ms" }}')
+        .warn(lambda:
+            "ok" == 1
+            AND "curl_rc" == 0
+            AND "final_http_code" >= 200
+            AND "final_http_code" < 300
+            AND "total_ms" > 500.0
+        )
+        .crit(lambda:
+            "ok" != 1
+            OR "curl_rc" != 0
+            OR "final_http_code" < 200
+            OR "final_http_code" >= 300
+            OR "total_ms" > 1500.0
+        )
+        .stateChangesOnly()
+        .log('/var/lib/kapacitor/dansu_https_health-alert.log')
+        .mqtt('dansu/alerts/monitoring/https_health')
+            .brokerName('home-alerts')
+            .qos(1)
