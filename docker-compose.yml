@@ -118,7 +118,7 @@ services:
         max-file: "3"
 
   grafana:
-    image: grafana/grafana:12.3.0-19020365962
+    image: grafana/grafana:12.3.11
 #    user: root
     restart: unless-stopped
     container_name: grafana
