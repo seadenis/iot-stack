@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -640,6 +640,11 @@
       "pluginVersion": "12.3.0-19020365962",
       "targets": [
         {
+          "alias": "Индекс ультрафиолета",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ff0df601o8w00b"
+          },
           "groupBy": [
             {
               "params": [
@@ -649,16 +654,15 @@
             },
             {
               "params": [
-                "previous"
+                "null"
               ],
               "type": "fill"
             }
           ],
+          "hide": false,
           "measurement": "mqtt_data",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"value_f\") / 2.5\nFROM \"mqtt_data\"\nWHERE\n  (\"client\"::tag = 'wb_AMTXYWW3'\n   AND \"channel\"::tag = 'Meshtastic/uv_lux_smoothed')\n  AND $timeFilter\n  AND \"value_f\" >= 0\n  AND \"value_f\" <= 37.5\nGROUP BY time($__interval) fill(previous)",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -672,26 +676,14 @@
               {
                 "params": [],
                 "type": "mean"
-              },
-              {
-                "params": [
-                  " / 2.5"
-                ],
-                "type": "math"
               }
             ]
           ],
           "tags": [
             {
-              "key": "client::tag",
-              "operator": "=",
-              "value": "wb_AMTXYWW3"
-            },
-            {
-              "condition": "AND",
               "key": "channel::tag",
               "operator": "=",
-              "value": "Meshtastic/uv_lux_smoothed"
+              "value": "weather/UV_index"
             }
           ]
         }
@@ -930,7 +922,7 @@
           ]
         }
       ],
-      "title": "Доступность Интернета",
+      "title": "Интернет",
       "transparent": true,
       "type": "stat"
     },
@@ -942,8 +934,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "dark-orange",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
@@ -976,12 +967,10 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "dashed"
+              "mode": "off"
             }
           },
-          "decimals": 1,
           "mappings": [],
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -990,16 +979,8 @@
                 "value": 0
               },
               {
-                "color": "yellow",
-                "value": 5
-              },
-              {
-                "color": "orange",
-                "value": 7.0001
-              },
-              {
                 "color": "red",
-                "value": 9
+                "value": 80
               }
             ]
           }
@@ -1012,7 +993,7 @@
         "x": 0,
         "y": 8
       },
-      "id": 22,
+      "id": 24,
       "options": {
         "legend": {
           "calcs": [],
@@ -1029,7 +1010,7 @@
       "pluginVersion": "12.3.0-19020365962",
       "targets": [
         {
-          "alias": "UV",
+          "alias": "Скорость ветра",
           "groupBy": [
             {
               "params": [
@@ -1039,7 +1020,7 @@
             },
             {
               "params": [
-                "null"
+                "none"
               ],
               "type": "fill"
             }
@@ -1047,8 +1028,6 @@
           "measurement": "mqtt_data",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"value_f\") / 2.5\nFROM \"mqtt_data\"\nWHERE\n  (\"client\"::tag = 'wb_AMTXYWW3'\n   AND \"channel\"::tag = 'Meshtastic/uv_lux_smoothed')\n  AND $timeFilter\n  AND \"value_f\" >= 0\n  AND \"value_f\" <= 37.5\nGROUP BY time($__interval) fill(0)",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1062,31 +1041,67 @@
               {
                 "params": [],
                 "type": "mean"
-              },
-              {
-                "params": [
-                  " / 2.5"
-                ],
-                "type": "math"
               }
             ]
           ],
           "tags": [
             {
-              "key": "client::tag",
-              "operator": "=",
-              "value": "wb_AMTXYWW3"
-            },
-            {
-              "condition": "AND",
               "key": "channel::tag",
               "operator": "=",
-              "value": "Meshtastic/uv_lux_smoothed"
+              "value": "weather/Wind_speed"
+            }
+          ]
+        },
+        {
+          "alias": "Порывы ветра",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ff0df601o8w00b"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "mqtt_data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value_f"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "channel::tag",
+              "operator": "=",
+              "value": "weather/Wind_gust"
             }
           ]
         }
       ],
-      "title": "Индекс ультрафиолета",
+      "title": "Ветер, м/с",
       "transparent": true,
       "type": "timeseries"
     },
@@ -1350,6 +1365,310 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "fixedColor": "dark-orange",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "decimals": 1,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 4
+              },
+              {
+                "color": "orange",
+                "value": 7.0001
+              },
+              {
+                "color": "red",
+                "value": 9
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0-19020365962",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ff0df601o8w00b"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "mqtt_data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value_f"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "channel::tag",
+              "operator": "=",
+              "value": "weather/UV_index"
+            }
+          ]
+        }
+      ],
+      "title": "Индекс ультрафиолета",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ff0df601o8w00b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 20,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Радиационный фон"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0-19020365962",
+      "targets": [
+        {
+          "alias": "Радиационный фон",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "mqtt_data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value_f\")/2 FROM \"mqtt_data\" WHERE (\"client\"::tag = 'zigbee' AND \"channel\"::tag = 'Radiation_sensor/radiation_dose_per_hour') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value_f"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "client::tag",
+              "operator": "=",
+              "value": "zigbee"
+            },
+            {
+              "condition": "AND",
+              "key": "channel::tag",
+              "operator": "=",
+              "value": "Radiation_sensor/radiation_dose_per_hour"
+            }
+          ]
+        }
+      ],
+      "title": "Радиационный фон, μR/h",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ff0df601o8w00b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -1438,7 +1757,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 24
       },
       "id": 4,
       "options": {
@@ -1663,7 +1982,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 24
       },
       "id": 10,
       "options": {
@@ -1803,7 +2122,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 32
       },
       "id": 8,
       "options": {
@@ -2027,320 +2346,6 @@
               "mode": "off"
             }
           },
-          "decimals": 0,
-          "mappings": [],
-          "max": 20,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Радиационный фон"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 24
-      },
-      "id": 3,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0-19020365962",
-      "targets": [
-        {
-          "alias": "Радиационный фон",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "previous"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "mqtt_data",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"value_f\")/2 FROM \"mqtt_data\" WHERE (\"client\"::tag = 'zigbee' AND \"channel\"::tag = 'Radiation_sensor/radiation_dose_per_hour') AND $timeFilter GROUP BY time($__interval) fill(previous)",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value_f"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "client::tag",
-              "operator": "=",
-              "value": "zigbee"
-            },
-            {
-              "condition": "AND",
-              "key": "channel::tag",
-              "operator": "=",
-              "value": "Radiation_sensor/radiation_dose_per_hour"
-            }
-          ]
-        }
-      ],
-      "title": "Радиационный фон, μR/h",
-      "transparent": true,
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "ff0df601o8w00b"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 0,
-          "mappings": [],
-          "max": 20,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Абсолютная влажность"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 32
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0-19020365962",
-      "targets": [
-        {
-          "alias": "Абсолютная влажность",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "linear"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "mqtt_data",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value_f"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "client::tag",
-              "operator": "=",
-              "value": "wb_AMTXYWW3"
-            },
-            {
-              "condition": "AND",
-              "key": "channel::tag",
-              "operator": "=",
-              "value": "Balcony/Abs_humidity"
-            }
-          ]
-        }
-      ],
-      "title": "Абсолютная влажность, g/m³",
-      "transparent": true,
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "ff0df601o8w00b"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
           "mappings": [],
           "max": 100,
           "min": 0,
@@ -2496,7 +2501,10 @@
               "mode": "off"
             }
           },
+          "decimals": 0,
           "mappings": [],
+          "max": 20,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -2515,13 +2523,13 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Освещенность"
+              "options": "Абсолютная влажность"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "super-light-orange",
+                  "fixedColor": "blue",
                   "mode": "fixed"
                 }
               }
@@ -2535,7 +2543,7 @@
         "x": 0,
         "y": 40
       },
-      "id": 7,
+      "id": 9,
       "options": {
         "legend": {
           "calcs": [],
@@ -2552,7 +2560,7 @@
       "pluginVersion": "12.3.0-19020365962",
       "targets": [
         {
-          "alias": "Освещенность",
+          "alias": "Абсолютная влажность",
           "groupBy": [
             {
               "params": [
@@ -2596,12 +2604,12 @@
               "condition": "AND",
               "key": "channel::tag",
               "operator": "=",
-              "value": "Balcony-ms/Illuminance"
+              "value": "Balcony/Abs_humidity"
             }
           ]
         }
       ],
-      "title": "Освещенность, lux",
+      "title": "Абсолютная влажность, g/m³",
       "transparent": true,
       "type": "timeseries"
     },
@@ -2792,6 +2800,364 @@
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Северная сторона"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Южная сторона"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 48
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0-19020365962",
+      "targets": [
+        {
+          "alias": "Северная сторона",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "mqtt_data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value_f"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "client::tag",
+              "operator": "=",
+              "value": "wb_AMTXYWW3"
+            },
+            {
+              "condition": "AND",
+              "key": "channel::tag",
+              "operator": "=",
+              "value": "Balcony-ms/Illuminance"
+            }
+          ]
+        },
+        {
+          "alias": "Южная сторона",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ff0df601o8w00b"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "mqtt_data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value_f"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "condition": "AND",
+              "key": "channel::tag",
+              "operator": "=",
+              "value": "weather/South_side_illuminance"
+            }
+          ]
+        }
+      ],
+      "title": "Освещенность, lux",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ff0df601o8w00b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 253,
+          "min": 207,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 48
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0-19020365962",
+      "targets": [
+        {
+          "alias": "Напряжение",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "mqtt_data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value_f"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "client::tag",
+              "operator": "=",
+              "value": "wb_AMTXYWW3"
+            },
+            {
+              "condition": "AND",
+              "key": "channel::tag",
+              "operator": "=",
+              "value": "e-meter/Urms"
+            }
+          ]
+        }
+      ],
+      "title": "Напряжение сети, В",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ff0df601o8w00b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
@@ -2934,7 +3300,7 @@
         "h": 16,
         "w": 12,
         "x": 0,
-        "y": 48
+        "y": 56
       },
       "id": 5,
       "options": {
@@ -3326,7 +3692,7 @@
           ]
         }
       ],
-      "title": "ICMP RTT Мир Митино Телеком, ms",
+      "title": "ICMP RTT via Мир Митино Телеком, мс",
       "transparent": true,
       "type": "timeseries"
     },
@@ -3488,7 +3854,7 @@
         "h": 16,
         "w": 12,
         "x": 12,
-        "y": 48
+        "y": 56
       },
       "id": 21,
       "options": {
@@ -3831,7 +4197,7 @@
           ]
         }
       ],
-      "title": "ICMP RTT МегаФон, ms",
+      "title": "ICMP RTT via МегаФон, мс",
       "transparent": true,
       "type": "timeseries"
     },
@@ -3843,7 +4209,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "shades"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
@@ -3879,10 +4245,7 @@
               "mode": "off"
             }
           },
-          "decimals": 0,
           "mappings": [],
-          "max": 253,
-          "min": 207,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -3897,15 +4260,46 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "mqtt_data.mean"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Задержка"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
-        "y": 64
+        "y": 72
       },
-      "id": 6,
+      "id": 25,
       "options": {
         "legend": {
           "calcs": [],
@@ -3922,6 +4316,7 @@
       "pluginVersion": "12.3.0-19020365962",
       "targets": [
         {
+          "alias": "Задержка",
           "groupBy": [
             {
               "params": [
@@ -3931,7 +4326,7 @@
             },
             {
               "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -3957,20 +4352,14 @@
           ],
           "tags": [
             {
-              "key": "client::tag",
-              "operator": "=",
-              "value": "wb_AMTXYWW3"
-            },
-            {
-              "condition": "AND",
               "key": "channel::tag",
               "operator": "=",
-              "value": "e-meter/Urms"
+              "value": "pi/RTT_Home"
             }
           ]
         }
       ],
-      "title": "Напряжение сети, V",
+      "title": "Доступность домашнего интернета извне, мс",
       "transparent": true,
       "type": "timeseries"
     }
@@ -3990,5 +4379,5 @@
   "timezone": "browser",
   "title": "Муравская",
   "uid": "ad8btw2",
-  "version": 54
+  "version": 9
 }
