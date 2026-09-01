@@ -4,11 +4,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "grafana/dashboards/**"
-      - "grafana/provisioning/datasources/**"
-      - "scripts/validate_grafana_dashboards.py"
-      - ".github/workflows/grafana-dashboards-ci.yml"
 
   push:
     branches:
