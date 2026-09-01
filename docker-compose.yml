@@ -127,8 +127,6 @@ services:
       influxdb: { condition: service_started }
     volumes:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
-      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
-      - ./grafana/provisioning/dashboards/json:/var/lib/grafana/dashboards/json:ro
       - grafana-storage:/var/lib/grafana
       - ./grafana/entrypoint-with-secrets.sh:/usr/local/bin/grafana-entrypoint-with-secrets.sh:ro
     ports:
