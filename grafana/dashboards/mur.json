@@ -27,7 +27,7 @@
       }
     ],
     "cursorSync": "Off",
-    "description": "",
+    "description": "Git Sync DR test",
     "editable": true,
     "elements": {
       "panel-10": {
@@ -5454,7 +5454,7 @@
       "timezone": "browser",
       "to": "now"
     },
-    "title": "Муравская",
+    "title": "Муравская1",
     "variables": []
   }
 }
