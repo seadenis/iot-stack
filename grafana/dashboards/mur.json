@@ -385,6 +385,10 @@
                 ]
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -398,7 +402,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       },
@@ -430,7 +434,7 @@
                           },
                           {
                             "params": [
-                              "previous"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -561,6 +565,10 @@
                 ]
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -574,7 +582,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       },
@@ -2410,6 +2418,10 @@
                 ]
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -2423,7 +2435,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       },
@@ -3110,6 +3122,10 @@
                 ]
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -3123,7 +3139,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       },
@@ -3155,7 +3171,7 @@
                           },
                           {
                             "params": [
-                              "previous"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -3164,7 +3180,7 @@
                         "orderByTime": "ASC",
                         "policy": "default",
                         "query": "SELECT mean(\"value_f\")/2 FROM \"mqtt_data\" WHERE (\"client\"::tag = 'zigbee' AND \"channel\"::tag = 'Radiation_sensor/radiation_dose_per_hour') AND $timeFilter GROUP BY time($__interval) fill(previous)",
-                        "rawQuery": true,
+                        "rawQuery": false,
                         "resultFormat": "time_series",
                         "select": [
                           [
@@ -3177,15 +3193,16 @@
                             {
                               "params": [],
                               "type": "mean"
+                            },
+                            {
+                              "params": [
+                                " / 2"
+                              ],
+                              "type": "math"
                             }
                           ]
                         ],
                         "tags": [
-                          {
-                            "key": "client::tag",
-                            "operator": "=",
-                            "value": "zigbee"
-                          },
                           {
                             "condition": "AND",
                             "key": "channel::tag",
@@ -3337,7 +3354,7 @@
                           },
                           {
                             "params": [
-                              "previous"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -3400,7 +3417,7 @@
                           },
                           {
                             "params": [
-                              "previous"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -4190,6 +4207,10 @@
                 ]
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -4203,7 +4224,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       },
@@ -4350,6 +4371,10 @@
                 "overrides": []
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -4363,7 +4388,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       },
@@ -4597,6 +4622,10 @@
                 ]
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -4610,7 +4639,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       },
@@ -4881,6 +4910,10 @@
                 "overrides": []
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -4894,7 +4927,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       },
@@ -5057,6 +5090,10 @@
                 ]
               },
               "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
@@ -5070,7 +5107,7 @@
                 }
               }
             },
-            "version": "12.3.0-19020365962"
+            "version": "13.0.7"
           }
         }
       }
@@ -5413,7 +5450,7 @@
         "1d"
       ],
       "fiscalYearStartMonth": 0,
-      "from": "now-6h",
+      "from": "now-7d",
       "hideTimepicker": false,
       "timezone": "browser",
       "to": "now"
