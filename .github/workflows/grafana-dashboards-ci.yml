@@ -1,0 +1,119 @@
+name: Grafana Dashboards CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "grafana/dashboards/**"
+      - "grafana/provisioning/datasources/**"
+      - "scripts/validate_grafana_dashboards.py"
+      - ".github/workflows/grafana-dashboards-ci.yml"
+
+  push:
+    branches:
+      - main
+    paths:
+      - "grafana/dashboards/**"
+      - "grafana/provisioning/datasources/**"
+      - "scripts/validate_grafana_dashboards.py"
+      - ".github/workflows/grafana-dashboards-ci.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: grafana-dashboards-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-grafana-dashboards:
+    name: Validate Grafana dashboards
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Show environment
+        run: |
+          set -euo pipefail
+
+          echo "=== ENVIRONMENT ========================================="
+          python3 --version
+          git --version
+
+          echo
+          echo "=== GIT ================================================"
+          git rev-parse HEAD
+
+      - name: Validate Grafana dashboard resources
+        run: |
+          set -euo pipefail
+
+          echo "=== DASHBOARD VALIDATION ================================"
+          python3 scripts/validate_grafana_dashboards.py
+
+      - name: Verify Grafana-generated PR scope
+        if: >-
+          github.event_name == 'pull_request' &&
+          startsWith(github.head_ref, 'dashboard/')
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          echo "=== GRAFANA PR SCOPE ===================================="
+
+          echo "Base: ${BASE_SHA}"
+          echo "Head: ${HEAD_SHA}"
+          echo
+
+          mapfile -t changed_files < <(
+            git diff --name-only "${BASE_SHA}...${HEAD_SHA}"
+          )
+
+          if [ "${#changed_files[@]}" -eq 0 ]; then
+            echo "ERROR: pull request contains no changed files"
+            exit 1
+          fi
+
+          invalid=0
+          dashboard_files=0
+
+          for path in "${changed_files[@]}"; do
+            echo "FILE: ${path}"
+
+            case "${path}" in
+              grafana/dashboards/*.json)
+                dashboard_files=$((dashboard_files + 1))
+                ;;
+              *)
+                echo \
+                  "ERROR: Grafana-generated dashboard PR changed " \
+                  "a file outside grafana/dashboards/*.json: ${path}"
+                invalid=1
+                ;;
+            esac
+          done
+
+          echo
+
+          if [ "${dashboard_files}" -eq 0 ]; then
+            echo "ERROR: no dashboard JSON changes found"
+            exit 1
+          fi
+
+          if [ "${invalid}" -ne 0 ]; then
+            echo "PR SCOPE RESULT: FAILED"
+            exit 1
+          fi
+
+          echo "Dashboard files changed: ${dashboard_files}"
+          echo "PR SCOPE RESULT: PASSED"
