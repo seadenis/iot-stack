@@ -5372,7 +5372,7 @@
                 "kind": "ElementReference",
                 "name": "panel-18"
               },
-              "height": 7,
+              "height": 8,
               "width": 12,
               "x": 0,
               "y": 8
@@ -5401,7 +5401,7 @@
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 15
+              "y": 16
             }
           },
           {
@@ -5427,7 +5427,7 @@
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 23
+              "y": 24
             }
           },
           {
@@ -5453,7 +5453,7 @@
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 31
+              "y": 32
             }
           },
           {
@@ -5479,7 +5479,7 @@
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 39
+              "y": 40
             }
           },
           {
@@ -5505,7 +5505,7 @@
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 47
+              "y": 48
             }
           },
           {
@@ -5531,7 +5531,7 @@
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 55
+              "y": 56
             }
           },
           {
@@ -5541,7 +5541,7 @@
                 "kind": "ElementReference",
                 "name": "panel-25"
               },
-              "height": 7,
+              "height": 8,
               "width": 12,
               "x": 12,
               "y": 56
@@ -5557,7 +5557,7 @@
               "height": 16,
               "width": 12,
               "x": 0,
-              "y": 63
+              "y": 64
             }
           },
           {
@@ -5570,7 +5570,7 @@
               "height": 16,
               "width": 12,
               "x": 12,
-              "y": 63
+              "y": 64
             }
           }
         ]
@@ -5594,7 +5594,7 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
-      "autoRefresh": "1m",
+      "autoRefresh": "15m",
       "autoRefreshIntervals": [
         "5s",
         "10s",
