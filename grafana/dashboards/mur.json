@@ -3154,6 +3154,139 @@
           }
         }
       },
+      "panel-26": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "ff0df601o8w00b"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "Ветер",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$__interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "none"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "mqtt_data",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "value_f"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "last"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "channel::tag",
+                            "operator": "=",
+                            "value": "weather/Wind_speed"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 26,
+          "links": [],
+          "title": "Ветер",
+          "transparent": true,
+          "vizConfig": {
+            "group": "gauge",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "velocityms"
+                },
+                "overrides": []
+              },
+              "options": {
+                "barShape": "flat",
+                "barWidthFactor": 0.5,
+                "effects": {
+                  "barGlow": false,
+                  "centerGlow": false,
+                  "gradient": true
+                },
+                "endpointMarker": "point",
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "segmentCount": 1,
+                "segmentSpacing": 0.3,
+                "shape": "gauge",
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto",
+                "sparkline": true,
+                "textMode": "auto"
+              }
+            },
+            "version": "13.0.7"
+          }
+        }
+      },
       "panel-3": {
         "kind": "Panel",
         "spec": {
@@ -5145,7 +5278,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-18"
+                "name": "panel-2"
               },
               "height": 8,
               "width": 3,
@@ -5158,7 +5291,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-2"
+                "name": "panel-13"
               },
               "height": 8,
               "width": 3,
@@ -5171,7 +5304,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-13"
+                "name": "panel-26"
               },
               "height": 8,
               "width": 3,
@@ -5236,9 +5369,9 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-24"
+                "name": "panel-18"
               },
-              "height": 8,
+              "height": 7,
               "width": 12,
               "x": 0,
               "y": 8
@@ -5262,12 +5395,12 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-22"
+                "name": "panel-24"
               },
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 16
+              "y": 15
             }
           },
           {
@@ -5288,12 +5421,12 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-4"
+                "name": "panel-22"
               },
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 24
+              "y": 23
             }
           },
           {
@@ -5314,12 +5447,12 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-8"
+                "name": "panel-4"
               },
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 32
+              "y": 31
             }
           },
           {
@@ -5340,12 +5473,12 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-9"
+                "name": "panel-8"
               },
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 40
+              "y": 39
             }
           },
           {
@@ -5366,12 +5499,12 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-7"
+                "name": "panel-9"
               },
               "height": 8,
               "width": 12,
               "x": 0,
-              "y": 48
+              "y": 47
             }
           },
           {
@@ -5392,12 +5525,12 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-5"
+                "name": "panel-7"
               },
-              "height": 16,
+              "height": 8,
               "width": 12,
               "x": 0,
-              "y": 56
+              "y": 55
             }
           },
           {
@@ -5418,12 +5551,25 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
+                "name": "panel-5"
+              },
+              "height": 16,
+              "width": 12,
+              "x": 0,
+              "y": 63
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
                 "name": "panel-25"
               },
               "height": 8,
               "width": 24,
               "x": 0,
-              "y": 72
+              "y": 79
             }
           }
         ]
