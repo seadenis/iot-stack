@@ -674,6 +674,7 @@
                   "color": {
                     "mode": "thresholds"
                   },
+                  "decimals": 0,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -2275,7 +2276,7 @@
           "description": "",
           "id": 21,
           "links": [],
-          "title": "ICMP RTT via МегаФон, мс",
+          "title": "ICMP RTT via МегаФон SIM, мс",
           "transparent": true,
           "vizConfig": {
             "group": "timeseries",
@@ -2469,6 +2470,7 @@
                       "group": "influxdb",
                       "kind": "DataQuery",
                       "spec": {
+                        "alias": "Индекс ультрафиолета",
                         "groupBy": [
                           {
                             "params": [
@@ -3238,6 +3240,7 @@
                   "color": {
                     "mode": "thresholds"
                   },
+                  "decimals": 1,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -3458,7 +3461,7 @@
                   "calcs": [],
                   "displayMode": "list",
                   "placement": "bottom",
-                  "showLegend": true
+                  "showLegend": false
                 },
                 "tooltip": {
                   "hideZeros": false,
@@ -4182,7 +4185,7 @@
           "description": "",
           "id": 5,
           "links": [],
-          "title": "ICMP RTT via Мир Митино Телеком, мс",
+          "title": "ICMP RTT via Мир Митино Телеком GPON, мс",
           "transparent": true,
           "vizConfig": {
             "group": "timeseries",
@@ -4524,7 +4527,7 @@
                   "calcs": [],
                   "displayMode": "list",
                   "placement": "bottom",
-                  "showLegend": true
+                  "showLegend": false
                 },
                 "tooltip": {
                   "hideZeros": false,
