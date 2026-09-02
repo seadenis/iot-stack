@@ -720,7 +720,7 @@
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true,
                 "sizing": "auto",
-                "sparkline": false,
+                "sparkline": true,
                 "textMode": "auto"
               }
             },
@@ -870,7 +870,7 @@
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true,
                 "sizing": "auto",
-                "sparkline": false,
+                "sparkline": true,
                 "textMode": "auto"
               }
             },
@@ -1017,7 +1017,7 @@
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true,
                 "sizing": "auto",
-                "sparkline": false,
+                "sparkline": true,
                 "textMode": "auto"
               }
             },
@@ -1433,7 +1433,7 @@
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true,
                 "sizing": "auto",
-                "sparkline": false,
+                "sparkline": true,
                 "textMode": "auto"
               }
             },
@@ -1589,7 +1589,7 @@
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true,
                 "sizing": "auto",
-                "sparkline": false,
+                "sparkline": true,
                 "textMode": "auto"
               }
             },
@@ -2748,7 +2748,7 @@
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true,
                 "sizing": "auto",
-                "sparkline": false,
+                "sparkline": true,
                 "textMode": "auto"
               }
             },
@@ -3085,6 +3085,7 @@
                       "mode": "off"
                     }
                   },
+                  "max": 25,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -5538,9 +5539,9 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-21"
+                "name": "panel-25"
               },
-              "height": 16,
+              "height": 7,
               "width": 12,
               "x": 12,
               "y": 56
@@ -5564,12 +5565,12 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-25"
+                "name": "panel-21"
               },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 79
+              "height": 16,
+              "width": 12,
+              "x": 12,
+              "y": 63
             }
           }
         ]
