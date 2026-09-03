@@ -22,7 +22,7 @@ var tls =
 tls
     |alert()
         .id('dansu_tls_security')
-        .message('DANSU TLS: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; TLS1.0 tested={{ index .Fields "tls10_tested" }} negotiated={{ index .Fields "tls10_negotiated" }} rejected={{ index .Fields "tls10_rejected" }}; TLS1.1 tested={{ index .Fields "tls11_tested" }} negotiated={{ index .Fields "tls11_negotiated" }} rejected={{ index .Fields "tls11_rejected" }}; TLS1.2={{ index .Fields "tls12_ok" }}; TLS1.3={{ index .Fields "tls13_ok" }}')
+        .message('DANSU TLS: {{ if eq .Level "OK" }}RESTORED — TLS policy снова соответствует требованиям{{ else if eq .Level "WARNING" }}WARNING — проверка блокировки legacy TLS дала неполный или неоднозначный результат{{ else }}CRITICAL — нарушена TLS policy: разрешён TLS 1.0/1.1 или недоступен TLS 1.2/1.3{{ end }}; TLS1.0 negotiated={{ index .Fields "tls10_negotiated" }} rejected={{ index .Fields "tls10_rejected" }}; TLS1.1 negotiated={{ index .Fields "tls11_negotiated" }} rejected={{ index .Fields "tls11_rejected" }}; TLS1.2={{ index .Fields "tls12_ok" }}; TLS1.3={{ index .Fields "tls13_ok" }}')
         .warn(lambda:
             "tls10_tested" != 1
             OR "tls11_tested" != 1

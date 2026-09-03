@@ -21,7 +21,7 @@ var https =
 https
     |alert()
         .id('dansu_https_health')
-        .message('DANSU HTTPS: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; curl_rc={{ index .Fields "curl_rc" }}; initial={{ index .Fields "initial_http_code" }}; final={{ index .Fields "final_http_code" }}; redirects={{ index .Fields "redirects" }}; total_ms={{ index .Fields "total_ms" }}; avg_3m_ms={{ index .Fields "avg_total_ms_3m" }}')
+        .message('DANSU HTTPS: {{ if eq .Level "OK" }}RESTORED — сайт снова отвечает нормально{{ else if eq .Level "WARNING" }}WARNING — повышенное среднее время ответа >500 ms за 3 минуты{{ else }}CRITICAL — сайт недоступен, HTTP-ответ некорректен или время ответа >1500 ms{{ end }}; HTTP={{ index .Fields "final_http_code" }}; curl_rc={{ index .Fields "curl_rc" }}; current={{ index .Fields "total_ms" }} ms; avg_3m={{ index .Fields "avg_total_ms_3m" }} ms')
         .warn(lambda:
             "ok" == 1
             AND "curl_rc" == 0

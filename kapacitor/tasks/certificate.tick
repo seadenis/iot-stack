@@ -17,7 +17,7 @@ var certificate =
 certificate
     |alert()
         .id('dansu_certificate')
-        .message('DANSU certificate: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; verify={{ index .Fields "verify_ok" }}; parse={{ index .Fields "parse_ok" }}; days_remaining={{ index .Fields "days_remaining" }}')
+        .message('DANSU certificate: {{ if eq .Level "OK" }}RESTORED — сертификат валиден, срок действия в норме{{ else if eq .Level "WARNING" }}WARNING — до окончания сертификата осталось менее 21 дня{{ else }}CRITICAL — сертификат невалиден, не разбирается или до окончания осталось менее 7 дней{{ end }}; days_remaining={{ index .Fields "days_remaining" }}; verify={{ index .Fields "verify_ok" }}; parse={{ index .Fields "parse_ok" }}')
         .warn(lambda:
             "verify_ok" == 1
             AND "parse_ok" == 1
