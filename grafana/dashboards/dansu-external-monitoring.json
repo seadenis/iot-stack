@@ -1505,7 +1505,20 @@
         ]
       }
     },
-    "links": [],
+    "links": [
+      {
+        "asDropdown": false,
+        "icon": "external link",
+        "includeVars": false,
+        "keepTime": false,
+        "tags": [],
+        "targetBlank": true,
+        "title": "Source (GitHub)",
+        "tooltip": "View source file in repository",
+        "type": "link",
+        "url": "https://github.com/seadenis/iot-stack/blob/main/grafana/dashboards/dansu-external-monitoring.json"
+      }
+    ],
     "liveNow": false,
     "preferences": {
       "layout": {
@@ -1528,7 +1541,7 @@
       "timezone": "browser",
       "to": "now"
     },
-    "title": "HTTPS Performance Copy",
+    "title": "DANSU External Monitoring",
     "variables": []
   }
 }
