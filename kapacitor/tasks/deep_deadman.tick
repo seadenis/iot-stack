@@ -16,7 +16,7 @@ var deep_presence =
 deep_presence
     |deadman(0.0, 1m)
         .id('dansu_deep_deadman')
-        .message('DANSU deep probe: {{ if eq .Level "OK" }}RESTORED{{ else }}NO_DATA >12m{{ end }}')
+        .message('DANSU deep probe: {{ if eq .Level "OK" }}RESTORED — глубокая внешняя проверка снова работает{{ else }}CRITICAL — NO_DATA >12m; глубокая внешняя проверка не поступает{{ end }}')
         .stateChangesOnly()
         .log('/var/lib/kapacitor/dansu_deep_deadman-alert.log')
         .mqtt('dansu/alerts/monitoring/deep_deadman')

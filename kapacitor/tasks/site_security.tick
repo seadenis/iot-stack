@@ -23,7 +23,7 @@ var dns =
 dns
     |alert()
         .id('dansu_dns_health')
-        .message('DANSU DNS: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; A_ok={{ index .Fields "a_ok" }}; A_count={{ index .Fields "a_count" }}; A_rc={{ index .Fields "a_rc" }}; AAAA_count={{ index .Fields "aaaa_count" }}; AAAA_rc={{ index .Fields "aaaa_rc" }}')
+        .message('DANSU DNS: {{ if eq .Level "OK" }}RESTORED — DNS-проверка снова проходит нормально{{ else if eq .Level "WARNING" }}WARNING — IPv4 DNS работает, но проверка AAAA завершилась ошибкой{{ else }}CRITICAL — A-запись dansu.ru не разрешается корректно{{ end }}; A_count={{ index .Fields "a_count" }}; A_rc={{ index .Fields "a_rc" }}; AAAA_count={{ index .Fields "aaaa_count" }}; AAAA_rc={{ index .Fields "aaaa_rc" }}')
         .warn(lambda:
             "a_ok" == 1
             AND "a_count" >= 1
@@ -70,7 +70,7 @@ var headers =
 headers
     |alert()
         .id('dansu_security_headers')
-        .message('DANSU security headers: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; curl_rc={{ index .Fields "curl_rc" }}; HSTS={{ index .Fields "hsts" }}; CSP={{ index .Fields "csp" }}; XCTO={{ index .Fields "x_content_type_options" }}; Referrer={{ index .Fields "referrer_policy" }}; Permissions={{ index .Fields "permissions_policy" }}; XFO={{ index .Fields "x_frame_options" }}')
+        .message('DANSU security headers: {{ if eq .Level "OK" }}RESTORED — набор security headers снова соответствует baseline{{ else if eq .Level "WARNING" }}WARNING — отсутствует один или несколько дополнительных security headers{{ else }}CRITICAL — проверка HTTP headers недоступна либо отсутствует HSTS/CSP{{ end }}; HSTS={{ index .Fields "hsts" }}; CSP={{ index .Fields "csp" }}; XCTO={{ index .Fields "x_content_type_options" }}; Referrer={{ index .Fields "referrer_policy" }}; Permissions={{ index .Fields "permissions_policy" }}; XFO={{ index .Fields "x_frame_options" }}; curl_rc={{ index .Fields "curl_rc" }}')
         .warn(lambda:
             "curl_rc" == 0
             AND "hsts" == 1
