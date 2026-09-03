@@ -9,7 +9,8 @@ var https =
                 last("initial_http_code") AS "initial_http_code",
                 last("final_http_code") AS "final_http_code",
                 last("redirects") AS "redirects",
-                last("total_ms") AS "total_ms"
+                last("total_ms") AS "total_ms",
+                mean("total_ms") AS "avg_total_ms_3m"
             FROM "monitoring"."raw_180d"."dansu_https"
             WHERE "source" = 'dansu-ops'
               AND "target" = 'dansu.ru'
@@ -20,13 +21,13 @@ var https =
 https
     |alert()
         .id('dansu_https_health')
-        .message('DANSU HTTPS: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; curl_rc={{ index .Fields "curl_rc" }}; initial={{ index .Fields "initial_http_code" }}; final={{ index .Fields "final_http_code" }}; redirects={{ index .Fields "redirects" }}; total_ms={{ index .Fields "total_ms" }}')
+        .message('DANSU HTTPS: {{ if eq .Level "OK" }}RESTORED{{ else }}{{ .Level }}{{ end }}; curl_rc={{ index .Fields "curl_rc" }}; initial={{ index .Fields "initial_http_code" }}; final={{ index .Fields "final_http_code" }}; redirects={{ index .Fields "redirects" }}; total_ms={{ index .Fields "total_ms" }}; avg_3m_ms={{ index .Fields "avg_total_ms_3m" }}')
         .warn(lambda:
             "ok" == 1
             AND "curl_rc" == 0
             AND "final_http_code" >= 200
             AND "final_http_code" < 300
-            AND "total_ms" > 500.0
+            AND "avg_total_ms_3m" > 500.0
         )
         .crit(lambda:
             "ok" != 1
