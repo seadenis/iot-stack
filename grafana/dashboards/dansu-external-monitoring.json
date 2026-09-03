@@ -151,6 +151,7 @@
                       "group": "influxdb",
                       "kind": "DataQuery",
                       "spec": {
+                        "alias": "$col",
                         "query": "SELECT\n  last(\"tls10_negotiated\") AS \"TLS 1.0\",\n  last(\"tls11_negotiated\") AS \"TLS 1.1\"\nFROM \"dansu_tls\"\nWHERE time \u003e now() - 10m",
                         "rawQuery": true,
                         "resultFormat": "time_series"
@@ -248,7 +249,8 @@
                       "group": "influxdb",
                       "kind": "DataQuery",
                       "spec": {
-                        "query": "SELECT mean(\"days_remaining\") AS \"Certificate days remaining\"\nFROM \"dansu_certificate\"\nWHERE $timeFilter\nGROUP BY time($__interval) fill(null)",
+                        "alias": "$col",
+                        "query": "SELECT last(\"value\") AS \"Deep Probe\"\nFROM \"dansu_deep_heartbeat\"\nWHERE time \u003e now() - 12m",
                         "rawQuery": true,
                         "resultFormat": "time_series"
                       },
@@ -265,9 +267,9 @@
           "description": "",
           "id": 11,
           "links": [],
-          "title": "Certificate history",
+          "title": "Deep Probe",
           "vizConfig": {
-            "group": "timeseries",
+            "group": "stat",
             "kind": "VizConfig",
             "spec": {
               "fieldConfig": {
@@ -275,40 +277,30 @@
                   "color": {
                     "mode": "palette-classic"
                   },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "options": {
+                        "1": {
+                          "color": "green",
+                          "index": 0,
+                          "text": "OK"
+                        }
+                      },
+                      "type": "value"
                     },
-                    "insertNulls": false,
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
+                    {
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "color": "red",
+                          "index": 1,
+                          "text": "NO DATA"
+                        }
+                      },
+                      "type": "special"
                     }
-                  },
+                  ],
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -321,27 +313,26 @@
                         "value": 80
                       }
                     ]
-                  },
-                  "unit": "d"
+                  }
                 },
                 "overrides": []
               },
               "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
                 },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
               }
             },
             "version": "13.0.7"
@@ -366,6 +357,7 @@
                       "group": "influxdb",
                       "kind": "DataQuery",
                       "spec": {
+                        "alias": "$col",
                         "query": "SELECT\n  last(\"a_count\") AS \"IPv4 A\",\n  last(\"aaaa_count\") AS \"IPv6 AAAA\"\nFROM \"dansu_dns\"\nWHERE time \u003e now() - 10m",
                         "rawQuery": true,
                         "resultFormat": "time_series"
@@ -404,7 +396,32 @@
                     ]
                   }
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "IPv6 AAAA",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "0": {
+                                "color": "text",
+                                "index": 0,
+                                "text": "0"
+                              }
+                            },
+                            "type": "value"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               },
               "options": {
                 "colorMode": "value",
@@ -446,6 +463,7 @@
                       "group": "influxdb",
                       "kind": "DataQuery",
                       "spec": {
+                        "alias": "$col",
                         "query": "SELECT\n  last(\"hsts\") AS \"HSTS\",\n  last(\"csp\") AS \"CSP\",\n  last(\"x_content_type_options\") AS \"X-Content-Type\",\n  last(\"referrer_policy\") AS \"Referrer\",\n  last(\"permissions_policy\") AS \"Permissions\",\n  last(\"x_frame_options\") AS \"X-Frame\"\nFROM \"dansu_security_headers\"\nWHERE time \u003e now() - 10m",
                         "rawQuery": true,
                         "resultFormat": "time_series"
@@ -515,6 +533,92 @@
                   ],
                   "fields": "",
                   "values": true
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+              }
+            },
+            "version": "13.0.7"
+          }
+        }
+      },
+      "panel-14": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "dansu-monitoring"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT mean(\"ok\") * 100 AS \"HTTPS Success\"\nFROM \"dansu_https\"\nWHERE $timeFilter",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 14,
+          "links": [],
+          "title": "HTTPS Success",
+          "vizConfig": {
+            "group": "stat",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "red",
+                        "value": 0
+                      },
+                      {
+                        "color": "#EAB839",
+                        "value": 99
+                      },
+                      {
+                        "color": "green",
+                        "value": 99.9
+                      }
+                    ]
+                  },
+                  "unit": "percent"
+                },
+                "overrides": []
+              },
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
                 },
                 "showPercentChange": false,
                 "textMode": "auto",
@@ -737,6 +841,7 @@
                       "group": "influxdb",
                       "kind": "DataQuery",
                       "spec": {
+                        "alias": "$col",
                         "query": "SELECT last(\"tls12_ok\") AS \"TLS 1.2\", last(\"tls13_ok\") AS \"TLS 1.3\" FROM \"dansu_tls\" WHERE time \u003e now() - 10m",
                         "rawQuery": true,
                         "resultFormat": "time_series"
@@ -858,6 +963,7 @@
             "spec": {
               "fieldConfig": {
                 "defaults": {
+                  "decimals": 0,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -875,7 +981,7 @@
                       }
                     ]
                   },
-                  "unit": "d"
+                  "unit": "suffix: d"
                 },
                 "overrides": []
               },
@@ -1016,6 +1122,7 @@
                       "group": "influxdb",
                       "kind": "DataQuery",
                       "spec": {
+                        "alias": "$col",
                         "query": "SELECT\n  mean(\"total_ms\") AS \"Total\",\n  mean(\"ttfb_ms\") AS \"TTFB\",\n  mean(\"tls_ms\") AS \"TLS\",\n  mean(\"tcp_ms\") AS \"TCP\",\n  mean(\"dns_ms\") AS \"DNS\"\nFROM \"dansu_https\"\nWHERE $timeFilter\nGROUP BY time($__interval) fill(null)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
@@ -1026,7 +1133,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "interval": "1m"
+              },
               "transformations": []
             }
           },
@@ -1034,6 +1143,7 @@
           "id": 7,
           "links": [],
           "title": "HTTPS Performance",
+          "transparent": true,
           "vizConfig": {
             "group": "timeseries",
             "kind": "VizConfig",
@@ -1052,7 +1162,7 @@
                     "barAlignment": 0,
                     "barWidthFactor": 0.6,
                     "drawStyle": "line",
-                    "fillOpacity": 0,
+                    "fillOpacity": 10,
                     "gradientMode": "none",
                     "hideFrom": {
                       "legend": false,
@@ -1061,12 +1171,12 @@
                     },
                     "insertNulls": false,
                     "lineInterpolation": "linear",
-                    "lineWidth": 1,
+                    "lineWidth": 2,
                     "pointSize": 5,
                     "scaleDistribution": {
                       "type": "linear"
                     },
-                    "showPoints": "auto",
+                    "showPoints": "never",
                     "showValues": false,
                     "spanNulls": false,
                     "stacking": {
@@ -1096,7 +1206,81 @@
                   },
                   "unit": "ms"
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Total",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 2
+                      },
+                      {
+                        "id": "custom.fillOpacity",
+                        "value": 10
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "TTFB",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 2
+                      },
+                      {
+                        "id": "custom.fillOpacity",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "TLS",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 1
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "TCP",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 1
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "DNS",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 1
+                      }
+                    ]
+                  }
+                ]
               },
               "options": {
                 "annotations": {
@@ -1293,7 +1477,7 @@
                           "name": "panel-1"
                         },
                         "height": 3,
-                        "width": 3,
+                        "width": 5,
                         "x": 0,
                         "y": 0
                       }
@@ -1306,8 +1490,21 @@
                           "name": "panel-2"
                         },
                         "height": 3,
-                        "width": 4,
-                        "x": 3,
+                        "width": 6,
+                        "x": 5,
+                        "y": 0
+                      }
+                    },
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-14"
+                        },
+                        "height": 3,
+                        "width": 6,
+                        "x": 11,
                         "y": 0
                       }
                     },
@@ -1319,8 +1516,8 @@
                           "name": "panel-3"
                         },
                         "height": 3,
-                        "width": 4,
-                        "x": 7,
+                        "width": 6,
+                        "x": 17,
                         "y": 0
                       }
                     },
@@ -1332,9 +1529,9 @@
                           "name": "panel-4"
                         },
                         "height": 3,
-                        "width": 5,
-                        "x": 11,
-                        "y": 0
+                        "width": 11,
+                        "x": 0,
+                        "y": 3
                       }
                     },
                     {
@@ -1345,9 +1542,9 @@
                           "name": "panel-5"
                         },
                         "height": 3,
-                        "width": 3,
-                        "x": 16,
-                        "y": 0
+                        "width": 6,
+                        "x": 11,
+                        "y": 3
                       }
                     },
                     {
@@ -1358,9 +1555,9 @@
                           "name": "panel-6"
                         },
                         "height": 3,
-                        "width": 4,
-                        "x": 19,
-                        "y": 0
+                        "width": 6,
+                        "x": 17,
+                        "y": 3
                       }
                     }
                   ]
@@ -1382,10 +1579,10 @@
                       "spec": {
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-7"
+                          "name": "panel-8"
                         },
-                        "height": 8,
-                        "width": 23,
+                        "height": 4,
+                        "width": 2,
                         "x": 0,
                         "y": 0
                       }
@@ -1395,12 +1592,12 @@
                       "spec": {
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-8"
+                          "name": "panel-7"
                         },
-                        "height": 3,
-                        "width": 12,
-                        "x": 0,
-                        "y": 8
+                        "height": 8,
+                        "width": 21,
+                        "x": 2,
+                        "y": 0
                       }
                     },
                     {
@@ -1410,10 +1607,10 @@
                           "kind": "ElementReference",
                           "name": "panel-9"
                         },
-                        "height": 3,
-                        "width": 11,
-                        "x": 12,
-                        "y": 8
+                        "height": 4,
+                        "width": 2,
+                        "x": 0,
+                        "y": 4
                       }
                     }
                   ]
