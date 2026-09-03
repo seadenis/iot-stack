@@ -16,3 +16,19 @@ datasources:
       pdcInjected: false
     secureJsonData:
       password: $INFLUX_GRAFANA_PASSWORD
+
+  - name: DANSU Monitoring
+    uid: dansu-monitoring
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    user: grafana_ro
+    basicAuth: false
+    isDefault: false
+    editable: false
+    jsonData:
+      dbName: monitoring
+      httpMode: POST
+      pdcInjected: false
+    secureJsonData:
+      password: $INFLUX_GRAFANA_PASSWORD
