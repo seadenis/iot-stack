@@ -1,6 +1,6 @@
 services:
   telegraf-monitoring:
-    image: telegraf:1.36.3-alpine
+    image: telegraf:1.38.4-alpine
     restart: unless-stopped
     container_name: telegraf-monitoring
     user: telegraf
@@ -25,6 +25,55 @@ services:
 
     environment:
       - TZ=Europe/Moscow
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+
+  stack-probe:
+    build:
+      context: ./stack-probe
+    image: iot-stack-stack-probe:local
+    restart: unless-stopped
+    container_name: stack-probe
+
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop:
+      - ALL
+    cap_add:
+      # Entry point reads root/service-owned Docker secrets,
+      # copies them to tmpfs and immediately drops to user probe.
+      - DAC_READ_SEARCH
+      - CHOWN
+      - SETUID
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+
+    secrets:
+      - mqtt2influx_username
+      - mqtt2influx_password
+      - influx_monitoring_password
+      - influx_grafana_password
+
+    environment:
+      - TZ=Europe/Moscow
+      - PROBE_INTERVAL=60
+      - CANARY_INTERVAL=60
+      - MQTT2INFLUX_TIMEOUT=25
+      - TELEGRAF_MONITORING_MAX_AGE=120
+      - SNAPSHOT_TOPIC=dansu/alerts/monitoring/internal_stack_state
+
+    healthcheck:
+      test: ["CMD", "python", "/app/healthcheck.py"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
 
     logging:
       driver: json-file
