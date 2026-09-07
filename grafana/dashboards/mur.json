@@ -1384,10 +1384,6 @@
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "purple",
-                        "value": 0
-                      },
-                      {
                         "color": "blue",
                         "value": 0
                       },
@@ -1540,11 +1536,7 @@
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "dark-purple",
-                        "value": 0
-                      },
-                      {
-                        "color": "dark-blue",
+                        "color": "blue",
                         "value": 0
                       },
                       {
@@ -1803,36 +1795,6 @@
                   }
                 },
                 "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Холодный"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "dark-blue",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Горячий"
-                    },
-                    "properties": [
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "dark-red",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  },
                   {
                     "matcher": {
                       "id": "byName",
@@ -2588,7 +2550,7 @@
                       },
                       {
                         "color": "orange",
-                        "value": 7.0001
+                        "value": 7
                       },
                       {
                         "color": "red",
@@ -2714,7 +2676,7 @@
                       },
                       {
                         "color": "yellow",
-                        "value": 5
+                        "value": 4
                       },
                       {
                         "color": "orange",
@@ -2942,10 +2904,6 @@
                       {
                         "color": "green",
                         "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
                       }
                     ]
                   }
@@ -3251,10 +3209,6 @@
                       {
                         "color": "green",
                         "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
                       }
                     ]
                   },
