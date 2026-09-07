@@ -5412,7 +5412,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-3"
+                "name": "panel-22"
               },
               "height": 8,
               "width": 12,
@@ -5425,7 +5425,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-22"
+                "name": "panel-10"
               },
               "height": 8,
               "width": 12,
@@ -5438,7 +5438,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-10"
+                "name": "panel-8"
               },
               "height": 8,
               "width": 12,
@@ -5464,7 +5464,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-11"
+                "name": "panel-3"
               },
               "height": 8,
               "width": 12,
@@ -5477,7 +5477,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-8"
+                "name": "panel-11"
               },
               "height": 8,
               "width": 12,
@@ -5490,7 +5490,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-12"
+                "name": "panel-7"
               },
               "height": 8,
               "width": 12,
@@ -5516,7 +5516,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-6"
+                "name": "panel-12"
               },
               "height": 8,
               "width": 12,
@@ -5529,7 +5529,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-7"
+                "name": "panel-25"
               },
               "height": 8,
               "width": 12,
@@ -5542,7 +5542,7 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-25"
+                "name": "panel-6"
               },
               "height": 8,
               "width": 12,
