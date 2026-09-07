@@ -1204,6 +1204,10 @@
                                 "value_s"
                               ],
                               "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "last"
                             }
                           ]
                         ],
