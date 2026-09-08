@@ -69,6 +69,10 @@ jobs:
           '
 
       - name: Validate Docker Compose configuration
+        env:
+          DOCKER_SOCK_GID: "999"
+          GF_ADMIN_PASSWORD: "ci-placeholder"
+          MQTT_PW: "ci-placeholder"
         run: |
           mkdir -p secrets
           printf 'ci-user\n' > secrets/mqtt2influx_username
