@@ -153,6 +153,7 @@ services:
     container_name: nginx
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./secrets/public-rate-limit-trust.conf:/etc/nginx/conf.d/00-public-rate-limit-trust.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
       - "0.0.0.0:80:80"
