@@ -2446,7 +2446,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4526,7 +4526,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4589,7 +4589,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "null"
                             ],
                             "type": "fill"
                           }
