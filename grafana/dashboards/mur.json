@@ -1622,7 +1622,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -1685,7 +1685,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -1762,7 +1762,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2518,7 +2518,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -4661,7 +4661,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5569,7 +5569,7 @@
         "1d"
       ],
       "fiscalYearStartMonth": 0,
-      "from": "now-7d",
+      "from": "now-2d",
       "hideTimepicker": false,
       "timezone": "browser",
       "to": "now"
