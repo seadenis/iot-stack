@@ -3,6 +3,9 @@ services:
     image: telegraf:1.38.4-alpine
     restart: unless-stopped
     container_name: telegraf-monitoring
+    mem_limit: 224m
+    memswap_limit: 288m
+    cpus: "0.35"
     user: telegraf
 
     depends_on:
@@ -38,6 +41,9 @@ services:
     image: iot-stack-stack-probe:local
     restart: unless-stopped
     container_name: stack-probe
+    mem_limit: 96m
+    memswap_limit: 128m
+    cpus: "0.50"
 
     read_only: true
     tmpfs:
