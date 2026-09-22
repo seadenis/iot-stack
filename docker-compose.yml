@@ -150,7 +150,7 @@ services:
       - influx_grafana_password
 
   nginx:
-    image: nginx:1.29-alpine
+    image: nginx:1.30.5-alpine@sha256:a5f2157a0302eb0c5e300415effb63a9e70ed1eb9c107283819bf6d149ab607c
     restart: unless-stopped
     container_name: nginx
     volumes:
