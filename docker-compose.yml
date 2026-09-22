@@ -121,6 +121,8 @@ services:
     image: grafana/grafana:13.0.7
 #    user: root
     restart: unless-stopped
+    mem_limit: 768m
+    memswap_limit: 896m
     container_name: grafana
     entrypoint: ["/bin/sh", "/usr/local/bin/grafana-entrypoint-with-secrets.sh"]
     depends_on:
@@ -154,6 +156,7 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/log/dansu-nginx:/var/log/nginx-host
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
