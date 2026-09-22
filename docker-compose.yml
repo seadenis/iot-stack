@@ -32,10 +32,16 @@ services:
       - INFLUXDB_COORDINATOR_MAX_SELECT_POINT=100
       - INFLUXDB_HTTP_MAX_ROW_LIMIT=100000
       - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_HTTP_LOG_ENABLED=false
       - INFLUXDB_DATA_QUERY_LOG_ENABLED=false
         #    labels:
         #      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
     mem_limit: 500m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:8086/ping"]
       interval: 1m
@@ -118,7 +124,7 @@ services:
         max-file: "3"
 
   grafana:
-    image: grafana/grafana:13.0.7
+    image: grafana/grafana:13.0.9@sha256:c26daa778ea9fd817be3fe606ba4b78ea4c217a7a27c1ba8f5faa4418ecc48dd
 #    user: root
     restart: unless-stopped
     mem_limit: 768m
