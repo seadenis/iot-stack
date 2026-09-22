@@ -156,7 +156,7 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
-      - /var/log/dansu-nginx:/var/log/nginx-host
+      - /var/log/dansu-nginx/access.log:/var/log/nginx/access.log
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
