@@ -66,7 +66,7 @@
                         "measurement": "mqtt_data",
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "SELECT mean(\"value_f\")/1.333 FROM \"mqtt_data\" WHERE (\"client\"::tag = 'zigbee' AND \"channel\"::tag = 'Server_room_sensor/pressure') AND $timeFilter GROUP BY time($__interval) fill(linear)",
+                        "query": "SELECT mean(\"value_f\")/1.333 FROM \"mqtt_data\" WHERE (\"client\"::tag = 'zigbee' AND \"channel\"::tag = 'Server_room_sensor/pressure') AND $timeFilter GROUP BY time($__interval) fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series",
                         "select": [
@@ -137,7 +137,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -223,7 +223,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -255,7 +255,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -332,7 +332,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -402,7 +402,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -511,7 +511,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -582,7 +582,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -725,7 +725,7 @@
                 "textMode": "auto"
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -875,7 +875,7 @@
                 "textMode": "auto"
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -1022,7 +1022,7 @@
                 "textMode": "auto"
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -1169,7 +1169,7 @@
                 "wideLayout": true
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -1286,7 +1286,7 @@
                 "wideLayout": true
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -1438,7 +1438,7 @@
                 "textMode": "auto"
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -1590,7 +1590,7 @@
                 "textMode": "auto"
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -1845,7 +1845,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -1877,7 +1877,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -1940,7 +1940,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -2003,7 +2003,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -2066,7 +2066,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -2129,7 +2129,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -2192,7 +2192,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -2269,7 +2269,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2414,7 +2414,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -2579,7 +2579,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -2720,7 +2720,7 @@
                 "textMode": "auto"
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -2880,7 +2880,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2928,7 +2928,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -3115,7 +3115,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -3245,7 +3245,7 @@
                 "textMode": "auto"
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -3357,7 +3357,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3428,7 +3428,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -3600,7 +3600,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3683,7 +3683,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -3715,7 +3715,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -3778,7 +3778,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -3841,7 +3841,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -3904,7 +3904,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -3967,7 +3967,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -4093,7 +4093,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -4170,7 +4170,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -4330,7 +4330,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -4362,7 +4362,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -4439,7 +4439,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -4494,7 +4494,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -4745,7 +4745,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -4777,7 +4777,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -4840,7 +4840,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -4903,7 +4903,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -4980,7 +4980,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5033,7 +5033,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       },
@@ -5065,7 +5065,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -5142,7 +5142,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
+                    "insertNulls": 1800000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5213,7 +5213,7 @@
                 }
               }
             },
-            "version": "13.0.7"
+            "version": "13.0.9"
           }
         }
       }
