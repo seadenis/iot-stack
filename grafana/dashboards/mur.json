@@ -58,7 +58,7 @@
                           },
                           {
                             "params": [
-                              "linear"
+                              "none"
                             ],
                             "type": "fill"
                           }
@@ -67,7 +67,7 @@
                         "orderByTime": "ASC",
                         "policy": "default",
                         "query": "SELECT mean(\"value_f\")/1.333 FROM \"mqtt_data\" WHERE (\"client\"::tag = 'zigbee' AND \"channel\"::tag = 'Server_room_sensor/pressure') AND $timeFilter GROUP BY time($__interval) fill(none)",
-                        "rawQuery": true,
+                        "rawQuery": false,
                         "resultFormat": "time_series",
                         "select": [
                           [
@@ -80,6 +80,12 @@
                             {
                               "params": [],
                               "type": "mean"
+                            },
+                            {
+                              "params": [
+                                " / 1.333"
+                              ],
+                              "type": "math"
                             }
                           ]
                         ],
@@ -137,14 +143,14 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": 7200000,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
                     "scaleDistribution": {
                       "type": "linear"
                     },
-                    "showPoints": "auto",
+                    "showPoints": "never",
                     "showValues": false,
                     "spanNulls": false,
                     "stacking": {
@@ -332,14 +338,14 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
-                    "lineInterpolation": "smooth",
+                    "insertNulls": 7200000,
+                    "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
                     "scaleDistribution": {
                       "type": "linear"
                     },
-                    "showPoints": "auto",
+                    "showPoints": "never",
                     "showValues": false,
                     "spanNulls": false,
                     "stacking": {
@@ -2880,14 +2886,14 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
-                    "lineInterpolation": "smooth",
+                    "insertNulls": 7200000,
+                    "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
                     "scaleDistribution": {
                       "type": "linear"
                     },
-                    "showPoints": "auto",
+                    "showPoints": "never",
                     "showValues": false,
                     "spanNulls": false,
                     "stacking": {
@@ -3600,14 +3606,14 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
-                    "lineInterpolation": "smooth",
+                    "insertNulls": 7200000,
+                    "lineInterpolation": "stepAfter",
                     "lineWidth": 1,
                     "pointSize": 5,
                     "scaleDistribution": {
                       "type": "linear"
                     },
-                    "showPoints": "auto",
+                    "showPoints": "never",
                     "showValues": false,
                     "spanNulls": false,
                     "stacking": {
@@ -5569,7 +5575,7 @@
         "1d"
       ],
       "fiscalYearStartMonth": 0,
-      "from": "now-2d",
+      "from": "now-7d",
       "hideTimepicker": false,
       "timezone": "browser",
       "to": "now"
