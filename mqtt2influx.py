@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import json
 import logging
 import math
 import os
@@ -86,6 +87,116 @@ INFLUX_PASSWORD = read_secret(
 )
 
 
+METRIC_ENVELOPE_SCHEMA = "dansu.metric.v1"
+
+
+def utc_now_iso():
+    return (
+        datetime.now(timezone.utc)
+        .isoformat(timespec="microseconds")
+        .replace("+00:00", "Z")
+    )
+
+
+def decode_metric_payload(raw_value):
+    """
+    Decode an optional source-timestamped metric envelope.
+
+    Legacy payloads are returned unchanged.
+
+    Timestamp-aware format:
+        {
+            "schema": "dansu.metric.v1",
+            "ts": "2026-09-29T17:30:00.123456Z",
+            "value": 12.34
+        }
+
+    Returns:
+        (value_as_string, source_event_time_or_none)
+
+    For a recognised envelope with a valid value but an invalid or
+    missing timestamp, the value is preserved and receive time is used.
+    """
+
+    try:
+        payload = json.loads(raw_value)
+    except (json.JSONDecodeError, TypeError):
+        return raw_value, None
+
+    # Ordinary JSON from other sources remains legacy data.
+    if not isinstance(payload, dict):
+        return raw_value, None
+
+    if payload.get("schema") != METRIC_ENVELOPE_SCHEMA:
+        return raw_value, None
+
+    # A recognised envelope without a value cannot be unwrapped safely.
+    if "value" not in payload:
+        logging.warning(
+            "Invalid %s envelope: value is missing; using legacy payload",
+            METRIC_ENVELOPE_SCHEMA,
+        )
+        return raw_value, None
+
+    value = payload["value"]
+
+    if isinstance(value, bool):
+        value = int(value)
+    elif not isinstance(value, (str, int, float)):
+        value = json.dumps(
+            value,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        )
+
+    value = str(value)
+
+    if "ts" not in payload:
+        logging.warning(
+            "Invalid %s envelope: ts is missing; using receive time",
+            METRIC_ENVELOPE_SCHEMA,
+        )
+        return value, None
+
+    source_time = payload["ts"]
+
+    if not isinstance(source_time, str) or not source_time.strip():
+        logging.warning(
+            "Invalid %s envelope: ts is not a non-empty string; "
+            "using receive time",
+            METRIC_ENVELOPE_SCHEMA,
+        )
+        return value, None
+
+    normalized_time = source_time.strip()
+
+    if normalized_time.endswith("Z"):
+        normalized_time = normalized_time[:-1] + "+00:00"
+
+    try:
+        parsed_time = datetime.fromisoformat(normalized_time)
+
+        if parsed_time.tzinfo is None:
+            raise ValueError("timestamp has no timezone")
+
+        event_time = (
+            parsed_time
+            .astimezone(timezone.utc)
+            .isoformat(timespec="microseconds")
+            .replace("+00:00", "Z")
+        )
+
+    except ValueError:
+        logging.warning(
+            "Invalid %s timestamp: %r; using receive time",
+            METRIC_ENVELOPE_SCHEMA,
+            source_time,
+        )
+        return value, None
+
+    return value, event_time
+
+
 class DBWriterThread(Thread):
     def __init__(self, influx_client, *args, **kwargs):
         self.influx_client = influx_client
@@ -93,12 +204,17 @@ class DBWriterThread(Thread):
         self.queue_lock = Lock()
         super().__init__(*args, **kwargs)
 
-    def schedule_item(self, client, device_id, control_id, value):
-        event_time = (
-            datetime.now(timezone.utc)
-            .isoformat(timespec="microseconds")
-            .replace("+00:00", "Z")
-        )
+    def schedule_item(
+        self,
+        client,
+        device_id,
+        control_id,
+        value,
+        event_time=None,
+    ):
+        if event_time is None:
+            event_time = utc_now_iso()
+
         item = (
             event_time,
             client,
@@ -310,10 +426,17 @@ def on_mqtt_message(client, userdata, msg):
     except Exception:
         value = "Error during decoding"
 
+    value, source_event_time = decode_metric_payload(value)
+
     logging.info(
-        "WB: topic=%s, value=%s",
+        "WB: topic=%s, value=%s%s",
         msg.topic,
         value,
+        (
+            f", source_ts={source_event_time}"
+            if source_event_time
+            else ""
+        ),
     )
 
     if device_id == "wb-adc":
@@ -324,6 +447,7 @@ def on_mqtt_message(client, userdata, msg):
         device_id,
         control_id,
         value,
+        event_time=source_event_time,
     )
 
 
