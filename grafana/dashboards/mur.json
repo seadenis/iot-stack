@@ -3010,7 +3010,7 @@
           "description": "",
           "id": 25,
           "links": [],
-          "title": "Доступность домашнего интернета извне, мс",
+          "title": "Доступность \"белого\" IP Мир Митино Телеком из Интернета, мс",
           "transparent": true,
           "vizConfig": {
             "group": "timeseries",
@@ -3037,14 +3037,14 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
+                    "insertNulls": 7200000,
+                    "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
                     "scaleDistribution": {
                       "type": "linear"
                     },
-                    "showPoints": "auto",
+                    "showPoints": "never",
                     "showValues": false,
                     "spanNulls": false,
                     "stacking": {
@@ -3055,7 +3055,6 @@
                       "mode": "off"
                     }
                   },
-                  "max": 25,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
