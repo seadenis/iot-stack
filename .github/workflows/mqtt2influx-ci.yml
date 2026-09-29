@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "mqtt2influx.py"
+      - "tests/**"
       - "python-ingest/**"
       - "docker-compose.yml"
       - ".dockerignore"
@@ -15,6 +16,7 @@ on:
       - main
     paths:
       - "mqtt2influx.py"
+      - "tests/**"
       - "python-ingest/**"
       - "docker-compose.yml"
       - ".dockerignore"
@@ -34,7 +36,16 @@ jobs:
 
       - name: Check Python syntax
         run: |
-          python3 -m py_compile mqtt2influx.py
+          python3 -m py_compile \
+            mqtt2influx.py \
+            tests/test_mqtt2influx_payload.py
+
+      - name: Test mqtt2influx payload compatibility
+        run: |
+          python3 -m unittest discover \
+            -s tests \
+            -p 'test_mqtt2influx_payload.py' \
+            -v
 
       - name: Build mqtt2influx image
         run: |
