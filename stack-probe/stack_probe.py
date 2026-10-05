@@ -30,7 +30,7 @@ INFLUX = os.getenv("INFLUX_URL", "http://influxdb:8086")
 GRAFANA = os.getenv("GRAFANA_URL", "http://grafana:3000")
 KAPACITOR = os.getenv("KAPACITOR_URL", "http://kapacitor:9092")
 MQTT_HOST = os.getenv("MQTT_HOST", "mosquitto")
-PUBLIC_HOST = os.getenv("PUBLIC_HOST", "dansu.ru")
+PUBLIC_HOST = os.getenv("PUBLIC_HOST", "dansu1.ru")
 SNAPSHOT_TOPIC = os.getenv(
     "SNAPSHOT_TOPIC",
     "dansu/alerts/monitoring/internal_stack_state",

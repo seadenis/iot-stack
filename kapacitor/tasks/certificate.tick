@@ -9,7 +9,7 @@ var certificate =
                 last("days_remaining") AS "days_remaining"
             FROM "monitoring"."raw_180d"."dansu_certificate"
             WHERE "source" = 'dansu-ops'
-              AND "target" = 'dansu.ru'
+              AND "target" = 'dansu1.ru'
         ''')
             .period(10m)
             .every(1m)
