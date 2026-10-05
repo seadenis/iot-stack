@@ -15,7 +15,7 @@ var dns =
                 last("aaaa_rc") AS "aaaa_rc"
             FROM "monitoring"."raw_180d"."dansu_dns"
             WHERE "source" = 'dansu-ops'
-              AND "target" = 'dansu.ru'
+              AND "target" = 'dansu1.ru'
         ''')
             .period(10m)
             .every(1m)
@@ -23,7 +23,7 @@ var dns =
 dns
     |alert()
         .id('dansu_dns_health')
-        .message('DANSU DNS: {{ if eq .Level "OK" }}RESTORED — DNS-проверка снова проходит нормально{{ else if eq .Level "WARNING" }}WARNING — IPv4 DNS работает, но проверка AAAA завершилась ошибкой{{ else }}CRITICAL — A-запись dansu.ru не разрешается корректно{{ end }}; A_count={{ index .Fields "a_count" }}; A_rc={{ index .Fields "a_rc" }}; AAAA_count={{ index .Fields "aaaa_count" }}; AAAA_rc={{ index .Fields "aaaa_rc" }}')
+        .message('DANSU DNS: {{ if eq .Level "OK" }}RESTORED — DNS-проверка снова проходит нормально{{ else if eq .Level "WARNING" }}WARNING — IPv4 DNS работает, но проверка AAAA завершилась ошибкой{{ else }}CRITICAL — A-запись dansu1.ru не разрешается корректно{{ end }}; A_count={{ index .Fields "a_count" }}; A_rc={{ index .Fields "a_rc" }}; AAAA_count={{ index .Fields "aaaa_count" }}; AAAA_rc={{ index .Fields "aaaa_rc" }}')
         .warn(lambda:
             "a_ok" == 1
             AND "a_count" >= 1
@@ -62,7 +62,7 @@ var headers =
                 last("required_ok") AS "required_ok"
             FROM "monitoring"."raw_180d"."dansu_security_headers"
             WHERE "source" = 'dansu-ops'
-              AND "target" = 'dansu.ru'
+              AND "target" = 'dansu1.ru'
         ''')
             .period(10m)
             .every(1m)

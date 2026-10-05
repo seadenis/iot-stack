@@ -13,7 +13,7 @@ var https =
                 mean("total_ms") AS "avg_total_ms_3m"
             FROM "monitoring"."raw_180d"."dansu_https"
             WHERE "source" = 'dansu-ops'
-              AND "target" = 'dansu.ru'
+              AND "target" = 'dansu1.ru'
         ''')
             .period(3m)
             .every(1m)
