@@ -68,6 +68,7 @@ services:
 
     environment:
       - TZ=Europe/Moscow
+      - PUBLIC_HOST=dansu1.ru
       - PROBE_INTERVAL=60
       - CANARY_INTERVAL=60
       - MQTT2INFLUX_TIMEOUT=25
