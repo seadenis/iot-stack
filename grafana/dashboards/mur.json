@@ -3037,7 +3037,8 @@
                     "lineWidth": 1,
                     "pointSize": 5,
                     "scaleDistribution": {
-                      "type": "linear"
+                      "log": 2,
+                      "type": "log"
                     },
                     "showPoints": "never",
                     "showValues": false,
