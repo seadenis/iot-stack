@@ -639,15 +639,10 @@
                         ],
                         "tags": [
                           {
-                            "key": "client::tag",
-                            "operator": "=",
-                            "value": "zigbee"
-                          },
-                          {
                             "condition": "AND",
                             "key": "channel::tag",
                             "operator": "=",
-                            "value": "Outdoor_balcony/humidity"
+                            "value": "weather/Relative_humidity"
                           }
                         ]
                       },
