@@ -5210,15 +5210,10 @@
                         ],
                         "tags": [
                           {
-                            "key": "client::tag",
-                            "operator": "=",
-                            "value": "wb_AMTXYWW3"
-                          },
-                          {
                             "condition": "AND",
                             "key": "channel::tag",
                             "operator": "=",
-                            "value": "Balcony/Dewpoint"
+                            "value": "weather/Dew_point"
                           }
                         ]
                       },
