@@ -3802,6 +3802,69 @@
                     },
                     "refId": "B"
                   }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "ff0df601o8w00b"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "Отфильтровано воды, л",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$__interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "previous"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "mqtt_data",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "value_f"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "mean"
+                            },
+                            {
+                              "params": [
+                                " *1000"
+                              ],
+                              "type": "math"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "channel::tag",
+                            "operator": "=",
+                            "value": "Water_filter_meter/water_consumed"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "C"
+                  }
                 }
               ],
               "queryOptions": {},
@@ -3811,7 +3874,7 @@
           "description": "",
           "id": 28,
           "links": [],
-          "title": "Электропроводность холодной воды, µS/cm",
+          "title": "Электропроводность холодной воды",
           "transparent": true,
           "vizConfig": {
             "group": "timeseries",
@@ -3868,7 +3931,8 @@
                         "value": 80
                       }
                     ]
-                  }
+                  },
+                  "unit": "µS/cm"
                 },
                 "overrides": [
                   {
@@ -3898,6 +3962,23 @@
                           "fixedColor": "light-green",
                           "mode": "fixed"
                         }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Отфильтровано воды, л",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.axisPlacement",
+                        "value": "right"
+                      },
+                      {
+                        "id": "unit",
+                        "value": "л"
                       }
                     ]
                   }
