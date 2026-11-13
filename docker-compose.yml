@@ -37,15 +37,20 @@ services:
     ports:
       - "127.0.0.1:8086:8086"
     environment:
-      - INFLUXDB_COORDINATOR_MAX_SELECT_POINT=100
+      - INFLUXDB_COORDINATOR_MAX_SELECT_POINT=0
       - INFLUXDB_HTTP_MAX_ROW_LIMIT=100000
       - INFLUXDB_HTTP_AUTH_ENABLED=true
       - INFLUXDB_HTTP_LOG_ENABLED=false
       - INFLUXDB_DATA_QUERY_LOG_ENABLED=false
+      - GODEBUG=madvdontneed=1
         #    labels:
         #      com.centurylinklabs.watchtower.enable: "${WATCHTOWER_LABEL}"
-    mem_limit: 500m
-    memswap_limit: 768m
+    mem_limit: 768m
+    memswap_limit: 1024m
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
     cpus: "0.75"
     logging:
       driver: json-file
