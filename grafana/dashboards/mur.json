@@ -52,13 +52,13 @@
                         "groupBy": [
                           {
                             "params": [
-                              "1m"
+                              "$__interval"
                             ],
                             "type": "time"
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -109,7 +109,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -143,7 +145,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 7200000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -261,7 +263,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -299,7 +301,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -333,7 +337,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 7200000,
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -435,7 +439,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -478,7 +482,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -512,7 +518,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -1613,7 +1619,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -1676,7 +1682,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -1719,7 +1725,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -1753,7 +1761,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -1868,7 +1876,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -1931,7 +1939,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -1994,7 +2002,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2057,7 +2065,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2120,7 +2128,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2183,7 +2191,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2246,7 +2254,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2309,7 +2317,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2352,7 +2360,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -2386,7 +2396,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2593,7 +2603,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2630,7 +2640,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -2665,7 +2677,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -2899,7 +2911,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2956,7 +2968,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -2993,7 +3005,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -3027,7 +3041,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 7200000,
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -3107,7 +3121,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -3144,7 +3158,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -3178,7 +3194,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 7200000,
+                    "insertNulls": false,
                     "lineInterpolation": "linear",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -4034,7 +4050,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4080,7 +4096,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -4114,7 +4132,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -4217,7 +4235,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4280,7 +4298,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4323,7 +4341,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -4357,7 +4377,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 7200000,
+                    "insertNulls": false,
                     "lineInterpolation": "stepAfter",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -4472,7 +4492,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4535,7 +4555,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4598,7 +4618,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4661,7 +4681,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4724,7 +4744,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4787,7 +4807,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4850,7 +4870,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4913,7 +4933,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -4976,7 +4996,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -5019,7 +5039,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -5053,7 +5075,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5275,7 +5297,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -5318,7 +5340,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -5352,7 +5376,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5439,7 +5463,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -5502,7 +5526,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -5540,7 +5564,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -5574,7 +5600,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5690,7 +5716,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -5753,7 +5779,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -5816,7 +5842,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -5854,7 +5880,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -5888,7 +5916,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
@@ -5973,7 +6001,7 @@
                           },
                           {
                             "params": [
-                              "none"
+                              "null"
                             ],
                             "type": "fill"
                           }
@@ -6016,7 +6044,9 @@
                   }
                 }
               ],
-              "queryOptions": {},
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
               "transformations": []
             }
           },
@@ -6050,7 +6080,7 @@
                       "tooltip": false,
                       "viz": false
                     },
-                    "insertNulls": 1800000,
+                    "insertNulls": false,
                     "lineInterpolation": "smooth",
                     "lineWidth": 1,
                     "pointSize": 5,
